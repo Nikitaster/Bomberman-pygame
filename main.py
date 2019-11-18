@@ -3,8 +3,8 @@ import pygame
 import random
 
 
-class BomberMan():
-    filename = 'bomberman.jpg'
+class BomberMan:
+    filename = 'bomberman.png'
 
     def __init__(self, x=10, y=90):
         self.image = pygame.image.load(self.filename)
@@ -63,7 +63,7 @@ def main():
     screen = pygame.display.set_mode(size_screen)
     x = 0
     game_over = False
-    bomberman = BomberMan()
+    bomberman = BomberMan(50, 125)
     while not game_over:
         for event in pygame.event.get():
             bomberman.process_event(event)
