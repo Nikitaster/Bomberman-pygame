@@ -4,7 +4,7 @@ from random import randint
 
 
 class Cell:
-    image = pygame.image.load("error.png")
+    image = None
 
     def __init__(self, x=0, y=75):
         self.rect = self.image.get_rect()
@@ -50,6 +50,9 @@ class Area:
             (0, 0, 150)
         ]
         self.area_data = []
+        self.block = Block()
+        self.grass = Grass()
+        self.brick = Brick()
         self.create_area()
 
     def create_area(self):
@@ -76,12 +79,18 @@ class Area:
                         self.area_data[i][j] = 2
                         count += 1
 
-    def process_draw(self, screen):
-        # for h in range(75, self.height + 75, self.size_block):
-        #     for w in range(0, self.width, self.size_block):
-        #         pygame.draw.rect(screen, self.rgb[(w + h) % 3], (w, h, self.size_block, self.size_block))
         for i in range(13):
             print(self.area_data[i])
+
+    def process_draw(self, screen):
+        for w in range(31):
+            for h in range(13):
+                if self.area_data[h][w] == 0:
+                    self.block.process_draw(screen, w * 50, h * 50 + 75)
+                elif self.area_data[h][w] == 1:
+                    self.grass.process_draw(screen, w * 50, h * 50 + 75)
+                elif self.area_data[h][w] == 2:
+                    self.brick.process_draw(screen, w * 50, h * 50 + 75)
 
 
 class Game:
@@ -109,24 +118,12 @@ class Game:
 
     def create_objects(self):
         self.area = Area()
-        self.area.process_draw(self.screen)
-        self.block = Block()
-        self.grass = Grass()
-        self.brick = Brick()
 
     def main_loop(self):
         while not self.game_over:
             self.process_event()
             self.screen.fill((75, 100, 150))
-
-            for w in range(31):
-                for h in range(13):
-                    if self.area.area_data[h][w] == 0:
-                        self.block.process_draw(self.screen, w * 50, h * 50 + 75)
-                    elif self.area.area_data[h][w] == 1:
-                        self.grass.process_draw(self.screen, w * 50, h * 50 + 75)
-                    elif self.area.area_data[h][w] == 2:
-                        self.brick.process_draw(self.screen, w * 50, h * 50 + 75)
+            self.area.process_draw(self.screen)
 
             pygame.display.flip()
             pygame.time.wait(10)
