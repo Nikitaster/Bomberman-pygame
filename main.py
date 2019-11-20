@@ -93,6 +93,34 @@ class Area:
                     self.brick.process_draw(screen, w * 50, h * 50 + 75)
 
 
+class Bomberman(Cell):
+    image = pygame.image.load("bomberman.png")
+
+    def __init__(self, x=50, y=125):
+        super().__init__(x, y)
+        self.shift_x = 0
+        self.shift_y = 0
+
+    def process_draw(self, screen):
+        screen.blit(self.image, self.rect)
+
+    def process_logic(self, width, height):
+        if self.rect.left + self.shift_x < 50:
+            self.shift_x = 0
+        elif self.rect.bottom + self.shift_y > height - 50 or self.rect.top + self.shift_y < 125:
+            self.shift_y = 0
+        if self.rect.left < 50:
+            self.rect.left = 50
+        if self.rect.bottom > height - 50:
+            self.rect.bottom = height - 50
+        if self.rect.top < 125:
+            self.rect.top = 125
+
+    def move(self):
+        self.rect.x += self.shift_x
+        self.rect.y += self.shift_y
+
+
 class Game:
     def __init__(self, width=800, height=625):
         self.width = width
@@ -104,26 +132,44 @@ class Game:
         pygame.init()
         self.create_objects()
 
+    def create_objects(self):
+        self.area = Area()
+        self.bomberman = Bomberman()
+
     def process_event(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.game_over = True
-            elif event.type == pygame.KEYDOWN:
-                if event.key == 275 or event.key == 100:
-                    self.down_left = True
-            elif event.type == pygame.KEYUP:
-                if event.key == 275 or event.key == 100:
-                    self.down_left = False
-                print(event.key)
-
-    def create_objects(self):
-        self.area = Area()
+            # elif event.type == pygame.KEYDOWN:
+            #     if event.key == 275 or event.key == 100:
+            #         self.down_left = True
+            # elif event.type == pygame.KEYUP:
+            #     if event.key == 275 or event.key == 100:
+            #         self.down_left = False
+            #     print(event.key)
+            if event.type == pygame.KEYDOWN:
+                if event.key == 97:
+                    self.bomberman.shift_x = -5
+                elif event.key == 100:
+                    self.bomberman.shift_x = 5
+                elif event.key == 115:
+                    self.bomberman.shift_y = 5
+                elif event.key == 119:
+                    self.bomberman.shift_y = -5
+            if event.type == pygame.KEYUP:
+                self.bomberman.shift_x = 0
+                self.bomberman.shift_y = 0
 
     def main_loop(self):
         while not self.game_over:
             self.process_event()
             self.screen.fill((75, 100, 150))
+
             self.area.process_draw(self.screen)
+
+            self.bomberman.process_logic(self.width, self.height)
+            self.bomberman.move()
+            self.bomberman.process_draw(self.screen)
 
             pygame.display.flip()
             pygame.time.wait(10)
