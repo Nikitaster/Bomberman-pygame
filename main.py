@@ -101,14 +101,17 @@ class Area:
         for i in range(2, 12, 2):
             for j in range(2, 30, 2):
                 self.area_data[i][j] = 0
-        count = 0
-        n = randint(50, 75)
-        for i in range(h):
-            for j in range(w):
-                if i % 2 == 1 and j % 2 == 1 and i != 1 and i != 2 and j != 1 and j != 2 and count <= n:
-                    if randint(0, 1):
-                        self.area_data[i][j] = 2
-                        count += 1
+
+        for i in range(randint(50, 75)):
+            x = randint(1, 29)
+            y = randint(1, 11)
+            while self.area_data[y][x] == 0 or self.area_data[y][x] == 2:
+                x = randint(1, 29)
+                y = randint(1, 11)
+            self.area_data[y][x] = 2
+        self.area_data[1][1] = 1
+        self.area_data[1][2] = 1
+        self.area_data[2][1] = 1
 
         for i in range(h):
             print(self.area_data[i])
