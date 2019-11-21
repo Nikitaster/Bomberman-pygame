@@ -46,21 +46,21 @@ class Cell:
 
 
 class Block(Cell):
-    image = pygame.image.load("blocker.jpg")
+    image = pygame.image.load("img/blocker.jpg")
 
     def __init__(self, x=0, y=75):
         super().__init__(x, y)
 
 
 class Grass(Cell):
-    image = pygame.image.load("grass.jpg")
+    image = pygame.image.load("img/grass.jpg")
 
     def __init__(self, x=0, y=75):
         super().__init__(x, y)
 
 
 class Brick(Cell):
-    image = pygame.image.load("brick.jpg")
+    image = pygame.image.load("img/brick.jpg")
 
     def __init__(self, x=0, y=75):
         super().__init__(x, y)
@@ -125,7 +125,7 @@ class Area:
 
 
 class Bomberman(Cell):
-    image = pygame.image.load("bomberman.png")
+    image = pygame.image.load("img/bomberman.png")
 
     def __init__(self, x=50, y=125):
         super().__init__(x, y)
