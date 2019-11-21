@@ -44,6 +44,7 @@ class Area:
         self.width = width
         self.height = height
         self.size_block = size_block
+        self.shift_area = 0
         self.rgb = [
             (150, 0, 0),
             (0, 150, 0),
@@ -56,15 +57,17 @@ class Area:
         self.create_area()
 
     def create_area(self):
-        for i in range(13):
+        h = self.height // 50
+        w = self.width // 50
+        for i in range(h):
             self.area_data.append([])
-        for i in range(13):
-            for j in range(31):
+        for i in range(h):
+            for j in range(w):
                 self.area_data[i].append(1)
-        for i in range(13):
+        for i in range(h):
             self.area_data[i][0] = 0
             self.area_data[i][30] = 0
-        for i in range(31):
+        for i in range(w):
             self.area_data[0][i] = 0
             self.area_data[12][i] = 0
         for i in range(2, 12, 2):
@@ -72,25 +75,25 @@ class Area:
                 self.area_data[i][j] = 0
         count = 0
         n = randint(50, 75)
-        for i in range(13):
-            for j in range(31):
+        for i in range(h):
+            for j in range(w):
                 if i % 2 == 1 and j % 2 == 1 and i != 1 and i != 2 and j != 1 and j != 2 and count <= n:
                     if randint(0, 1):
                         self.area_data[i][j] = 2
                         count += 1
 
-        for i in range(13):
+        for i in range(h):
             print(self.area_data[i])
 
-    def process_draw(self, screen):
-        for w in range(31):
-            for h in range(13):
+    def process_draw(self, screen, speed):
+        for w in range(self.width // 50):
+            for h in range(self.height // 50):
                 if self.area_data[h][w] == 0:
-                    self.block.process_draw(screen, w * 50, h * 50 + 75)
+                    self.block.process_draw(screen, w * 50 + self.shift_area * speed / 2, h * 50 + 75)
                 elif self.area_data[h][w] == 1:
-                    self.grass.process_draw(screen, w * 50, h * 50 + 75)
+                    self.grass.process_draw(screen, w * 50 + self.shift_area * speed / 2, h * 50 + 75)
                 elif self.area_data[h][w] == 2:
-                    self.brick.process_draw(screen, w * 50, h * 50 + 75)
+                    self.brick.process_draw(screen, w * 50 + self.shift_area * speed / 2, h * 50 + 75)
 
 
 class Bomberman(Cell):
@@ -100,25 +103,44 @@ class Bomberman(Cell):
         super().__init__(x, y)
         self.shift_x = 0
         self.shift_y = 0
+        self.speed = 5
 
     def process_draw(self, screen):
         screen.blit(self.image, self.rect)
 
-    def process_logic(self, width, height):
-        if self.rect.left + self.shift_x < 50:
+    def process_logic(self, width, height, area):
+        if self.rect.x + self.shift_x < 50:
             self.shift_x = 0
-        elif self.rect.bottom + self.shift_y > height - 50 or self.rect.top + self.shift_y < 125:
+        if self.rect.x> 700:
+            self.shift_x = 0
+
+        if self.rect.y + self.shift_y < 125:
             self.shift_y = 0
+        if self.rect.y + self.shift_y > height - 25:
+            self.shift_y = 0
+
+        if self.rect.x > 700:
+            self.rect.x = 700
+
+        print(self.rect.x + self.speed, end=' ')
+        print(area.shift_area)
+
         if self.rect.left < 50:
             self.rect.left = 50
-        if self.rect.bottom > height - 50:
-            self.rect.bottom = height - 50
         if self.rect.top < 125:
             self.rect.top = 125
 
     def move(self):
-        self.rect.x += self.shift_x
+        if self.rect.x <= 800 / 2:
+            self.rect.x += self.shift_x
+        else:
+            self.rect.x += self.shift_x / 2
         self.rect.y += self.shift_y
+
+    def get_shift_area(self, screen_width, area_width):
+        if self.rect.x > screen_width / 2:
+            return screen_width / 2 - self.rect.x
+        return 0
 
 
 class Game:
@@ -140,35 +162,37 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.game_over = True
-            # elif event.type == pygame.KEYDOWN:
-            #     if event.key == 275 or event.key == 100:
-            #         self.down_left = True
-            # elif event.type == pygame.KEYUP:
-            #     if event.key == 275 or event.key == 100:
-            #         self.down_left = False
-            #     print(event.key)
             if event.type == pygame.KEYDOWN:
-                if event.key == 97:
-                    self.bomberman.shift_x = -5
-                elif event.key == 100:
-                    self.bomberman.shift_x = 5
-                elif event.key == 115:
-                    self.bomberman.shift_y = 5
-                elif event.key == 119:
-                    self.bomberman.shift_y = -5
+                if event.key == 97 or event.key == 276:
+                    self.bomberman.shift_x = -self.bomberman.speed
+                    self.area.shift_x = -self.bomberman.speed
+                elif event.key == 100 or event.key == 275:
+                    self.bomberman.shift_x = self.bomberman.speed
+                    self.area.shift_x = self.bomberman.speed
+                elif event.key == 115 or event.key == 274:
+                    self.bomberman.shift_y = self.bomberman.speed
+                elif event.key == 119 or event.key == 273:
+                    self.bomberman.shift_y = -self.bomberman.speed
+                print(event.key)
             if event.type == pygame.KEYUP:
                 self.bomberman.shift_x = 0
                 self.bomberman.shift_y = 0
+                self.area.shift_x = 0
+
+    def process_move(self):
+        self.bomberman.move()
 
     def main_loop(self):
         while not self.game_over:
             self.process_event()
             self.screen.fill((75, 100, 150))
 
-            self.area.process_draw(self.screen)
+            self.area.shift_area = self.bomberman.get_shift_area(self.width, self.area.width)
+            # print(self.area.shift_area)
+            self.area.process_draw(self.screen, self.bomberman.speed)
 
-            self.bomberman.process_logic(self.width, self.height)
-            self.bomberman.move()
+            self.bomberman.process_logic(self.area.width, self.area.height, self.area)
+            self.process_move()
             self.bomberman.process_draw(self.screen)
 
             pygame.display.flip()
