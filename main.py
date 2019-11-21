@@ -14,19 +14,30 @@ class Camera:
         self.state = self.camera_func(self.state, target.rect)
 
     def apply(self, target):
+        return target.rect.move((self.state.x * 5 / 2, self.state.y))
         # return target.rect.move(self.state.topleft)
-          return target.rect.move((self.state.x, self.state.y))
 
+
+# def camera_func(camera, target_rect):
+#     l = -target_rect.x + 800 / 2
+#     t = -target_rect.y + 650 / 2
+#     w, h = 800, 650
+#     l = min(0, l)
+#     l = max(-(800 - 800 / 2), l)
+#     # t = max(-(650 - 650 / 2), t)
+#     # t - min(0, t)
+#     t = 200
+#     return Rect(l, t, w, h)
 
 def camera_func(camera, target_rect):
-    l = -target_rect.x + 800 / 2
-    t = -target_rect.y + 650 / 2
-    # w, h = camera.width, camera.height
-    w, h = 800, 650
-    l = min(0, l)
-    l = max(-(800 - 800 / 2), l)
-    # t = max(-(650 - 650 / 2), t)
-    # t - min(0, t)
+    l, t, _, _ = target_rect
+    _, _, w, h = camera
+    l, t = -l + 800 / 2, -t + 650 / 2
+
+    l = min(0, l)                             # Не движемся дальше левой границы
+    l = max(-(camera.width-800), l)           # Не движемся дальше правой границы
+    # t = max(-(camera.height-650), t)        # Не движемся дальше нижней границы
+    # t = min(0, t)                           # Не движемся дальше верхней границы
     t = 200
     return Rect(l, t, w, h)
 
@@ -139,30 +150,35 @@ class Bomberman(Cell):
     def process_logic(self, width, height, area):
         if self.rect.x + self.shift_x < 50:
             self.shift_x = 0
+        if self.rect.x + self.shift_x > 705:
+            self.shift_x = 0
 
         if self.rect.y + self.shift_y < 125:
             self.shift_y = 0
         if self.rect.y + self.shift_y > height - 25:
             self.shift_y = 0
 
-        print(self.rect.x + self.speed, end=' ')
-        print(self.rect.y)
+        print(self.rect.x)
 
         if self.rect.left < 50:
             self.rect.left = 50
         if self.rect.top < 125:
             self.rect.top = 125
-
-    # def move(self):
-    #     if self.rect.x <= 800 / 2:
-    #         self.rect.x += self.shift_x
-    #     else:
-    #         self.rect.x += self.shift_x / 2
-    #     self.rect.y += self.shift_y
+        if self.rect.x > 700:
+            self.rect.x = 700
+        if self.rect.left < 50:
+            self.rect.right = 50
 
     def move(self):
-        self.rect.x += self.shift_x
+        if self.rect.x <= 800 / 2:
+            self.rect.x += self.shift_x
+        else:
+            self.rect.x += self.shift_x / 2
         self.rect.y += self.shift_y
+
+    # def move(self):
+    #     self.rect.x += self.shift_x
+    #     self.rect.y += self.shift_y
 
     def get_shift_area(self, screen_width, area_width):
         if self.rect.x > screen_width / 2:
