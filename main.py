@@ -25,8 +25,9 @@ def camera_func(camera, target_rect):
     w, h = 800, 650
     l = min(0, l)
     l = max(-(800 - 800 / 2), l)
-    t = max(-(650 - 650 / 2), t)
-    t - min(0, t)
+    # t = max(-(650 - 650 / 2), t)
+    # t - min(0, t)
+    t = 200
     return Rect(l, t, w, h)
 
 
