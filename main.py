@@ -13,21 +13,9 @@ class Camera:
     def update(self, target):
         self.state = self.camera_func(self.state, target.rect)
 
-    def apply(self, target):
-        return target.rect.move((self.state.x * 5 / 2, self.state.y))
-        # return target.rect.move(self.state.topleft)
+    def apply(self, target, speed):
+        return target.rect.move((self.state.x * speed / 2, self.state.y))
 
-
-# def camera_func(camera, target_rect):
-#     l = -target_rect.x + 800 / 2
-#     t = -target_rect.y + 650 / 2
-#     w, h = 800, 650
-#     l = min(0, l)
-#     l = max(-(800 - 800 / 2), l)
-#     # t = max(-(650 - 650 / 2), t)
-#     # t - min(0, t)
-#     t = 200
-#     return Rect(l, t, w, h)
 
 def camera_func(camera, target_rect):
     l, t, _, _ = target_rect
@@ -93,6 +81,8 @@ class Area:
         self.block = Block()
         self.grass = Grass()
         self.brick = Brick()
+        self.objects = []
+
         self.create_area()
 
     def create_area(self):
@@ -124,15 +114,18 @@ class Area:
         for i in range(h):
             print(self.area_data[i])
 
-    # def process_draw(self, screen, speed):
-    #     for w in range(self.width // 50):
-    #         for h in range(self.height // 50):
-    #             if self.area_data[h][w] == 0:
-    #                 self.block.process_draw(screen, w * 50 + self.shift_area * speed / 2, h * 50 + 75)
-    #             elif self.area_data[h][w] == 1:
-    #                 self.grass.process_draw(screen, w * 50 + self.shift_area * speed / 2, h * 50 + 75)
-    #             elif self.area_data[h][w] == 2:
-    #                 self.brick.process_draw(screen, w * 50 + self.shift_area * speed / 2, h * 50 + 75)
+        for i in range(13):
+            for j in range(31):
+                if self.area_data[i][j] == 0:
+                    self.objects.append(Block(j * 50, i * 50 - 125))
+                elif self.area_data[i][j] == 1:
+                    self.objects.append(Grass(j * 50, i * 50 - 125))
+                elif self.area_data[i][j] == 2:
+                    self.objects.append(Brick(j * 50, i * 50 - 125))
+
+    def process_draw(self, screen, camera, speed):
+        for i in self.objects:
+            screen.blit(i.image, camera.apply(i, speed))
 
 
 class Bomberman(Cell):
@@ -201,16 +194,6 @@ class Game:
         self.area = Area()
         self.bomberman = Bomberman()
         self.camera = Camera(camera_func, 1550, 650)
-        self.objects = []
-
-        for i in range(13):
-            for j in range(31):
-                if self.area.area_data[i][j] == 0:
-                    self.objects.append(Block(j * 50, i * 50 - 125))
-                elif self.area.area_data[i][j] == 1:
-                    self.objects.append(Grass(j * 50, i * 50 - 125))
-                elif self.area.area_data[i][j] == 2:
-                    self.objects.append(Brick(j * 50, i * 50 - 125))
 
     def process_event(self):
         for event in pygame.event.get():
@@ -241,13 +224,8 @@ class Game:
             self.process_event()
             self.screen.fill((75, 100, 150))
 
-            # self.area.shift_area = self.bomberman.get_shift_area(self.width, self.area.width)
-            # print(self.area.shift_area)
-            # self.area.process_draw(self.screen, self.bomberman.speed)
-
             self.camera.update(self.bomberman)
-            for i in self.objects:
-                self.screen.blit(i.image, self.camera.apply(i))
+            self.area.process_draw(self.screen, self.camera, self.bomberman.speed)
 
             self.bomberman.process_logic(self.area.width, self.area.height, self.area)
             self.process_move()
