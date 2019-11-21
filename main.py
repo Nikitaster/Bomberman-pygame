@@ -1,7 +1,6 @@
 import sys
 import pygame
 from random import randint
-
 from pygame.rect import Rect
 
 
@@ -151,7 +150,7 @@ class Bomberman(Cell):
         if self.rect.y + self.shift_y > height - 25:
             self.shift_y = 0
 
-        print(self.rect.x)
+        # print(self.rect.x)
 
         if self.rect.left < 50:
             self.rect.left = 50
@@ -169,15 +168,6 @@ class Bomberman(Cell):
             self.rect.x += self.shift_x / 2
         self.rect.y += self.shift_y
 
-    # def move(self):
-    #     self.rect.x += self.shift_x
-    #     self.rect.y += self.shift_y
-
-    def get_shift_area(self, screen_width, area_width):
-        if self.rect.x > screen_width / 2:
-            return screen_width / 2 - self.rect.x
-        return 0
-
 
 class Game:
     def __init__(self, width=800, height=625):
@@ -185,7 +175,6 @@ class Game:
         self.height = height
         self.size = (width, height)
         self.game_over = False
-        self.down_left = False
         self.screen = pygame.display.set_mode(self.size)
         pygame.init()
         self.create_objects()
@@ -200,17 +189,17 @@ class Game:
             if event.type == pygame.QUIT:
                 self.game_over = True
             if event.type == pygame.KEYDOWN:
-                if event.key == 97 or event.key == 276:
+                if event.key == 97 or event.key == 276 or event.key == 160:
                     self.bomberman.shift_x = -self.bomberman.speed
                     self.area.shift_x = -self.bomberman.speed
-                elif event.key == 100 or event.key == 275:
+                elif event.key == 100 or event.key == 275 or event.key == 162:
                     self.bomberman.shift_x = self.bomberman.speed
                     self.area.shift_x = self.bomberman.speed
-                elif event.key == 115 or event.key == 274:
+                elif event.key == 115 or event.key == 274 or event.key == 161:
                     self.bomberman.shift_y = self.bomberman.speed
-                elif event.key == 119 or event.key == 273:
+                elif event.key == 119 or event.key == 273 or event.key == 172:
                     self.bomberman.shift_y = -self.bomberman.speed
-                print(event.key)
+                # print(event.key)
             if event.type == pygame.KEYUP:
                 self.bomberman.shift_x = 0
                 self.bomberman.shift_y = 0
