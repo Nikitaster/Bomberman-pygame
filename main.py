@@ -141,6 +141,7 @@ class Area:
 
 class Bomberman(Cell):
     image = pygame.image.load("img/bomberman.png")
+
     def __init__(self, x=50, y=125):
         super().__init__(x, y)
         self.shift_x = 0
@@ -221,7 +222,7 @@ class Game:
                 self.bomberman.shift_x = 0
                 self.bomberman.shift_y = 0
 
-    def process_move(self):
+    def process_collisions(self):
         self.bomberman.can_move_Right = True
         self.bomberman.can_move_Left = True
         self.bomberman.can_move_Up = True
@@ -229,15 +230,20 @@ class Game:
 
         for objects in self.area.objects:
             if objects.type != 'Grass':
-                if objects.rect.colliderect(Bomberman(self.bomberman.rect.x + self.bomberman.speed, self.bomberman.rect.y)):
+                if objects.rect.colliderect(
+                        Bomberman(self.bomberman.rect.x + self.bomberman.speed, self.bomberman.rect.y)):
                     self.bomberman.can_move_Right = False
-                elif objects.rect.colliderect(Bomberman(self.bomberman.rect.x - self.bomberman.speed, self.bomberman.rect.y)):
+                elif objects.rect.colliderect(
+                        Bomberman(self.bomberman.rect.x - self.bomberman.speed, self.bomberman.rect.y)):
                     self.bomberman.can_move_Left = False
-                elif objects.rect.colliderect(Bomberman(self.bomberman.rect.x, self.bomberman.rect.y + self.bomberman.speed)):
+                elif objects.rect.colliderect(
+                        Bomberman(self.bomberman.rect.x, self.bomberman.rect.y + self.bomberman.speed)):
                     self.bomberman.can_move_Down = False
-                elif objects.rect.colliderect(Bomberman(self.bomberman.rect.x, self.bomberman.rect.y - self.bomberman.speed)):
+                elif objects.rect.colliderect(
+                        Bomberman(self.bomberman.rect.x, self.bomberman.rect.y - self.bomberman.speed)):
                     self.bomberman.can_move_Up = False
 
+    def process_move(self):
         self.bomberman.move()
 
     def main_loop(self):
@@ -249,6 +255,7 @@ class Game:
             self.area.process_draw(self.screen, self.camera, self.bomberman.speed)
 
             self.bomberman.process_logic(self.area.width, self.area.height, self.area)
+            self.process_collisions()
             self.process_move()
             self.bomberman.process_draw(self.screen, self.camera)
 
