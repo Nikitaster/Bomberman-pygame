@@ -194,10 +194,8 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 if event.key == 97 or event.key == 276 or event.key == 160:
                     self.bomberman.shift_x = -self.bomberman.speed
-                    self.area.shift_x = -self.bomberman.speed
                 elif event.key == 100 or event.key == 275 or event.key == 162:
                     self.bomberman.shift_x = self.bomberman.speed
-                    self.area.shift_x = self.bomberman.speed
                 elif event.key == 115 or event.key == 274 or event.key == 161:
                     self.bomberman.shift_y = self.bomberman.speed
                 elif event.key == 119 or event.key == 273 or event.key == 172:
@@ -206,7 +204,6 @@ class Game:
             if event.type == pygame.KEYUP:
                 self.bomberman.shift_x = 0
                 self.bomberman.shift_y = 0
-                self.area.shift_x = 0
 
     def process_move(self):
         self.bomberman.move()
