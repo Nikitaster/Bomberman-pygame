@@ -30,8 +30,8 @@ def camera_func(camera, target_rect):
     _, _, w, h = camera
     l, t = -l + 800 / 2, -t + 650 / 2
 
-    l = min(0, l)                             # Не движемся дальше левой границы
-    l = max(-(camera.width-800), l)           # Не движемся дальше правой границы
+    l = min(0, l)  # Не движемся дальше левой границы
+    l = max(-(camera.width - 800), l)  # Не движемся дальше правой границы
     # t = max(-(camera.height-650), t)        # Не движемся дальше нижней границы
     # t = min(0, t)                           # Не движемся дальше верхней границы
     t = 200
@@ -89,9 +89,6 @@ class Area:
             (0, 0, 150)
         ]
         self.area_data = []
-        self.block = Block()
-        self.grass = Grass()
-        self.brick = Brick()
         self.objects = []
 
         self.create_area()
@@ -128,23 +125,32 @@ class Area:
         for i in range(h):
             print(self.area_data[i])
 
+        # for i in range(13):
+        #     for j in range(31):
+        #         if self.area_data[i][j] == 0:
+        #             self.objects.append(Block(j * 50, i * 50 - 125))
+        #         elif self.area_data[i][j] == 1:
+        #             self.objects.append(Grass(j * 50, i * 50 - 125))
+        #         elif self.area_data[i][j] == 2:
+        #             self.objects.append(Brick(j * 50, i * 50 - 125))
+
         for i in range(13):
             for j in range(31):
                 if self.area_data[i][j] == 0:
-                    self.objects.append(Block(j * 50, i * 50 - 125))
+                    self.objects.append(Block(j * 50, i * 50 + 75))
                 elif self.area_data[i][j] == 1:
-                    self.objects.append(Grass(j * 50, i * 50 - 125))
+                    self.objects.append(Grass(j * 50, i * 50 + 75))
                 elif self.area_data[i][j] == 2:
-                    self.objects.append(Brick(j * 50, i * 50 - 125))
+                    self.objects.append(Brick(j * 50, i * 50 + 75))
 
     def process_draw(self, screen, camera, speed):
         for i in self.objects:
-            screen.blit(i.image, camera.apply(i, speed))
+            # screen.blit(i.image, camera.apply(i, speed))
+            screen.blit(i.image, i.rect)
 
 
 class Bomberman(Cell):
     image = pygame.image.load("img/bomberman.png")
-
     def __init__(self, x=50, y=125):
         super().__init__(x, y)
         self.shift_x = 0
@@ -186,7 +192,6 @@ class Bomberman(Cell):
         else:
             self.rect.move_ip(self.shift_x / 2, self.shift_y)
 
-
 class Game:
     def __init__(self, width=800, height=625):
         self.width = width
@@ -221,11 +226,14 @@ class Game:
                 self.bomberman.shift_y = 0
 
     def process_move(self):
+        for i in self.area.objects:
+            if i.rect.colliderect(self.bomberman.rect) != 0 and i.type != 'Grass':
+                print("COLLIDE")
+
         self.bomberman.move()
 
     def main_loop(self):
         while not self.game_over:
-
             # self.bomberman.can_move_Down = True
             # self.bomberman.can_move_Up = True
             # self.bomberman.can_move_Left = True
@@ -252,7 +260,7 @@ class Game:
             self.process_event()
             self.screen.fill((75, 100, 150))
 
-            self.camera.update(self.bomberman)
+            # self.camera.update(self.bomberman)
             self.area.process_draw(self.screen, self.camera, self.bomberman.speed)
 
             self.bomberman.process_logic(self.area.width, self.area.height, self.area)
