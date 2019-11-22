@@ -22,7 +22,7 @@ class Camera:
         self.state = self.camera_func(self.state, target.rect)
 
     def apply(self, target, speed):
-        return target.rect.move((self.state.x * speed / 2, self.state.y))
+        return target.rect.move((self.state.x * speed / 4, self.state.y))
 
 
 def camera_func(camera, target_rect):
@@ -31,10 +31,10 @@ def camera_func(camera, target_rect):
     l, t = -l + 800 / 2, -t + 650 / 2
 
     l = min(0, l)  # Не движемся дальше левой границы
-    l = max(-(camera.width - 800), l)  # Не движемся дальше правой границы
-    # t = max(-(camera.height-650), t)        # Не движемся дальше нижней границы
-    # t = min(0, t)                           # Не движемся дальше верхней границы
-    t = 200
+    l = max(-(camera.width - 950), l)       # Не движемся дальше правой границы
+    t = max(-(camera.height-650), t)        # Не движемся дальше нижней границы
+    t = min(0, t)                           # Не движемся дальше верхней границы
+    # t = 200
     return Rect(l, t, w, h)
 
 
@@ -125,15 +125,6 @@ class Area:
         for i in range(h):
             print(self.area_data[i])
 
-        # for i in range(13):
-        #     for j in range(31):
-        #         if self.area_data[i][j] == 0:
-        #             self.objects.append(Block(j * 50, i * 50 - 125))
-        #         elif self.area_data[i][j] == 1:
-        #             self.objects.append(Grass(j * 50, i * 50 - 125))
-        #         elif self.area_data[i][j] == 2:
-        #             self.objects.append(Brick(j * 50, i * 50 - 125))
-
         for i in range(13):
             for j in range(31):
                 if self.area_data[i][j] == 0:
@@ -145,8 +136,7 @@ class Area:
 
     def process_draw(self, screen, camera, speed):
         for i in self.objects:
-            # screen.blit(i.image, camera.apply(i, speed))
-            screen.blit(i.image, i.rect)
+            screen.blit(i.image, camera.apply(i, speed))
 
 
 class Bomberman(Cell):
@@ -156,19 +146,16 @@ class Bomberman(Cell):
         self.shift_x = 0
         self.shift_y = 0
         self.speed = 5
-        self.can_move_Right = True
-        self.can_move_Left = True
-        self.can_move_Up = True
-        self.can_move_Down = True
 
     def process_draw(self, screen, camera):
-        screen.blit(self.image, self.rect)
+        # screen.blit(self.image, self.rect)
+        screen.blit(self.image, camera.apply(self, 5))
 
     def process_logic(self, width, height, area):
         if self.rect.x + self.shift_x < 50:
             self.shift_x = 0
-        if self.rect.x + self.shift_x > 705:
-            self.shift_x = 0
+        # if self.rect.x + self.shift_x > 705:
+        #     self.shift_x = 0
 
         if self.rect.y + self.shift_y < 125:
             self.shift_y = 0
@@ -181,16 +168,14 @@ class Bomberman(Cell):
             self.rect.left = 50
         if self.rect.top < 125:
             self.rect.top = 125
-        if self.rect.x > 700:
-            self.rect.x = 700
+        # if self.rect.x > 700:
+        #     self.rect.x = 700
         if self.rect.left < 50:
             self.rect.right = 50
 
     def move(self):
-        if self.rect.x <= 800 / 2:
-            self.rect.move_ip(self.shift_x, self.shift_y)
-        else:
-            self.rect.move_ip(self.shift_x / 2, self.shift_y)
+        self.rect.move_ip(self.shift_x, self.shift_y)
+
 
 class Game:
     def __init__(self, width=800, height=625):
@@ -205,7 +190,7 @@ class Game:
     def create_objects(self):
         self.area = Area()
         self.bomberman = Bomberman()
-        self.camera = Camera(camera_func, 1550, 650)
+        self.camera = Camera(camera_func, self.area.width, self.area.height)
 
     def process_event(self):
         for event in pygame.event.get():
@@ -229,38 +214,17 @@ class Game:
         for i in self.area.objects:
             if i.rect.colliderect(self.bomberman.rect) != 0 and i.type != 'Grass':
                 print("COLLIDE")
-
+                print(i.type, end=' ')
+                print(i.rect.x, end=' ')
+                print(i.rect.y)
         self.bomberman.move()
 
     def main_loop(self):
         while not self.game_over:
-            # self.bomberman.can_move_Down = True
-            # self.bomberman.can_move_Up = True
-            # self.bomberman.can_move_Left = True
-            # self.bomberman.can_move_Right = True
-
-            # b2 = Bomberman(self.bomberman.rect.x + 5, self.bomberman.rect.y)
-            # for i in range(31*13):
-            #     if pygame.sprite.collide_rect(self.bomberman, self.area.objects[i]) == 1:
-            #         if self.area.objects[i].type != "Grass":
-            #             if self.bomberman.rect.x + 50 + 5 >= self.area.objects[i].rect.x:
-            #                 self.bomberman.can_move_Right = False
-            #             elif self.bomberman.rect.x - 5 <= self.area.objects[i].rect.x + 50:
-            #                 self.bomberman.can_move_Left = False
-            #             elif self.bomberman.rect.y + 50 + 5 >= self.area.objects[i].rect.y:
-            #                 self.bomberman.can_move_Down = False
-            #             elif self.bomberman.rect.y - 5 <= self.area.objects[i].rect.y + 50:
-            #                 self.bomberman.can_move_Up = False
-
-            # for i in range(31 * 13):
-            #     if pygame.sprite.collide_rect(self, self.area.objects[i]) == 1:
-            #         if self.area.objects[i].type != "Grass":
-            #             print("ТУТ КОЛЛИЗИЯ!!!!")
-
             self.process_event()
             self.screen.fill((75, 100, 150))
 
-            # self.camera.update(self.bomberman)
+            self.camera.update(self.bomberman)
             self.area.process_draw(self.screen, self.camera, self.bomberman.speed)
 
             self.bomberman.process_logic(self.area.width, self.area.height, self.area)
