@@ -3,8 +3,9 @@
 # Иван Сафонов
 # Андрей Ткачёв
 # Дамир Федотов
-# Илья Илюхин
-# Евгений Маринин
+# Анна Бушэ
+# Харченко Владислав
+# Колесникова Алина
 
 import sys
 import pygame
@@ -56,6 +57,7 @@ class Block(Cell):
 
     def __init__(self, x=0, y=75):
         super().__init__(x, y)
+        self.type = "Block"
 
 
 class Grass(Cell):
@@ -63,6 +65,7 @@ class Grass(Cell):
 
     def __init__(self, x=0, y=75):
         super().__init__(x, y)
+        self.type = "Grass"
 
 
 class Brick(Cell):
@@ -70,6 +73,7 @@ class Brick(Cell):
 
     def __init__(self, x=0, y=75):
         super().__init__(x, y)
+        self.type = "Brick"
 
 
 class Area:
@@ -146,6 +150,10 @@ class Bomberman(Cell):
         self.shift_x = 0
         self.shift_y = 0
         self.speed = 5
+        self.can_move_Right = True
+        self.can_move_Left = True
+        self.can_move_Up = True
+        self.can_move_Down = True
 
     def process_draw(self, screen, camera):
         screen.blit(self.image, self.rect)
@@ -174,10 +182,9 @@ class Bomberman(Cell):
 
     def move(self):
         if self.rect.x <= 800 / 2:
-            self.rect.x += self.shift_x
+            self.rect.move_ip(self.shift_x, self.shift_y)
         else:
-            self.rect.x += self.shift_x / 2
-        self.rect.y += self.shift_y
+            self.rect.move_ip(self.shift_x / 2, self.shift_y)
 
 
 class Game:
@@ -218,6 +225,30 @@ class Game:
 
     def main_loop(self):
         while not self.game_over:
+
+            # self.bomberman.can_move_Down = True
+            # self.bomberman.can_move_Up = True
+            # self.bomberman.can_move_Left = True
+            # self.bomberman.can_move_Right = True
+
+            # b2 = Bomberman(self.bomberman.rect.x + 5, self.bomberman.rect.y)
+            # for i in range(31*13):
+            #     if pygame.sprite.collide_rect(self.bomberman, self.area.objects[i]) == 1:
+            #         if self.area.objects[i].type != "Grass":
+            #             if self.bomberman.rect.x + 50 + 5 >= self.area.objects[i].rect.x:
+            #                 self.bomberman.can_move_Right = False
+            #             elif self.bomberman.rect.x - 5 <= self.area.objects[i].rect.x + 50:
+            #                 self.bomberman.can_move_Left = False
+            #             elif self.bomberman.rect.y + 50 + 5 >= self.area.objects[i].rect.y:
+            #                 self.bomberman.can_move_Down = False
+            #             elif self.bomberman.rect.y - 5 <= self.area.objects[i].rect.y + 50:
+            #                 self.bomberman.can_move_Up = False
+
+            # for i in range(31 * 13):
+            #     if pygame.sprite.collide_rect(self, self.area.objects[i]) == 1:
+            #         if self.area.objects[i].type != "Grass":
+            #             print("ТУТ КОЛЛИЗИЯ!!!!")
+
             self.process_event()
             self.screen.fill((75, 100, 150))
 
@@ -240,4 +271,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-пшеп
