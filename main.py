@@ -146,6 +146,10 @@ class Bomberman(Cell):
         self.shift_x = 0
         self.shift_y = 0
         self.speed = 5
+        self.can_move_Right = True
+        self.can_move_Left = True
+        self.can_move_Up = True
+        self.can_move_Down = True
 
     def process_draw(self, screen, camera):
         # screen.blit(self.image, self.rect)
@@ -174,7 +178,14 @@ class Bomberman(Cell):
             self.rect.right = 50
 
     def move(self):
-        self.rect.move_ip(self.shift_x, self.shift_y)
+        if self.shift_x > 0 and self.can_move_Right:
+            self.rect.move_ip(self.shift_x, 0)
+        if self.shift_x < 0 and self.can_move_Left:
+            self.rect.move_ip(self.shift_x, 0)
+        if self.shift_y > 0 and self.can_move_Down:
+            self.rect.move_ip(0, self.shift_y)
+        if self.shift_y < 0 and self.can_move_Up:
+            self.rect.move_ip(0, self.shift_y)
 
 
 class Game:
@@ -211,12 +222,22 @@ class Game:
                 self.bomberman.shift_y = 0
 
     def process_move(self):
-        for i in self.area.objects:
-            if i.rect.colliderect(self.bomberman.rect) != 0 and i.type != 'Grass':
-                print("COLLIDE")
-                print(i.type, end=' ')
-                print(i.rect.x, end=' ')
-                print(i.rect.y)
+        self.bomberman.can_move_Right = True
+        self.bomberman.can_move_Left = True
+        self.bomberman.can_move_Up = True
+        self.bomberman.can_move_Down = True
+
+        for objects in self.area.objects:
+            if objects.type != 'Grass':
+                if objects.rect.colliderect(Bomberman(self.bomberman.rect.x + self.bomberman.speed, self.bomberman.rect.y)):
+                    self.bomberman.can_move_Right = False
+                elif objects.rect.colliderect(Bomberman(self.bomberman.rect.x - self.bomberman.speed, self.bomberman.rect.y)):
+                    self.bomberman.can_move_Left = False
+                elif objects.rect.colliderect(Bomberman(self.bomberman.rect.x, self.bomberman.rect.y + self.bomberman.speed)):
+                    self.bomberman.can_move_Down = False
+                elif objects.rect.colliderect(Bomberman(self.bomberman.rect.x, self.bomberman.rect.y - self.bomberman.speed)):
+                    self.bomberman.can_move_Up = False
+
         self.bomberman.move()
 
     def main_loop(self):
