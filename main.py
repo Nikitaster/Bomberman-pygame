@@ -188,6 +188,28 @@ class Bomberman(Cell):
         if self.shift_y < 0 and self.can_move_Up:
             self.rect.move_ip(0, self.shift_y)
 
+##############################
+
+class Player_Score:
+    def __init__(self, name = 'noname', score = 0, time = 200, lifes = 3):
+        self.name = name
+        self.score = score
+        self.time = time
+        self.lifes = lifes
+        self.alife = True
+        pygame.draw.rect(Game.screen, (200, 200, 200), (0, 0, 600, 125), 0)
+
+
+    def kill(self):
+        self.lifes -= 1;
+        if self.lifes == 0:
+            self.alife = False
+
+    def add_score(self, score_add = 0):
+        self.score += score_add
+
+#############################
+
 
 class Game:
     def __init__(self, width=800, height=625):
