@@ -60,7 +60,6 @@ class Game:
         self.bomberman.move()
 
     def process_draw(self):
-
         self.screen.fill((75, 100, 150))
         self.camera.update(self.bomberman)
         self.area.process_draw(self.screen, self.camera)
