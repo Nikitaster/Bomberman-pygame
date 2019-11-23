@@ -11,7 +11,6 @@ class Game:
         self.area = Area()
         self.bomberman = Bomberman()
         self.camera = Camera(camera_func, self.area.width, self.area.height)
-
         self.width = width
         self.height = height
         self.size = (width, height)
@@ -19,7 +18,7 @@ class Game:
         self.screen = pygame.display.set_mode(self.size)
         pygame.init()
         ####
-        self.player = Player_Score()
+        self.player = Player_Score() # This part must be here? Or it won't work... But you can try to make it different...
         ####
 
     def process_event(self):
@@ -69,6 +68,9 @@ class Game:
         self.area.process_draw(self.screen, self.camera, self.bomberman.speed)
         ####
         self.player.refresh_area(self.screen)
+        # Add score: self.player.add_score(<how_much_score>)
+        # Add time:  self.player.add_time(<how_much_time>)
+        # Add life:  self.player.add_life(<how_much_time>)
         ####
 
     def main_loop(self):
@@ -90,12 +92,12 @@ class Player_Score:
         self.time = time    # How much time left
         self.lifes = lifes  # How much life left
         self.lost = False   # Have you lost?
-        pygame.font.init()
-        self.scores_font = pygame.font.Font('./fonts/pixel.ttf', 30)
-        self.text_name = self.scores_font.render('', 0, (255, 255, 255))
-        self.text_time = self.scores_font.render('', 0, (255, 255, 255))
-        self.text_life = self.scores_font.render('', 0, (255, 255, 255))
-        self.text_score = self.scores_font.render('', 0, (255, 255, 255))
+        pygame.font.init()  # Start fonts
+        self.scores_font = pygame.font.Font('./fonts/pixel.ttf', 30)   # Create a font
+        self.text_name = self.scores_font.render('', 0, (255, 255, 255)) # declaration
+        self.text_time = self.scores_font.render('', 0, (255, 255, 255)) # declaration
+        self.text_life = self.scores_font.render('', 0, (255, 255, 255)) # declaration
+        self.text_score = self.scores_font.render('', 0, (255, 255, 255))# declaration
 
 
     def refresh_area(self, screen):
@@ -110,17 +112,17 @@ class Player_Score:
         screen.blit(self.text_score, (200, 45))
 
 
-    def add_time(self, time_add = -1):
+    def add_time(self, time_add = -1): # How much time you want to add? Or you want to set it less?
         self.time += time_add
         if self.time <= 0:
             self.lost = True
 
 
-    def add_life(self, lifes_add = -1):
+    def add_life(self, lifes_add = -1): # How much lifes you want to give? Or you want to kill him?
         self.lifes += lifes_add;
         if self.lifes <= 0:
             self.lost = True
 
 
-    def add_score(self, score_add = 0):
+    def add_score(self, score_add = 0): # How much score you want to add?
         self.score += score_add
