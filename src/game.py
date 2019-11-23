@@ -88,8 +88,10 @@ class Player_Score:
         self.name = name    # Player name
         self.score = score  # Player score
         self.time = time    # How much time left
-        self.lifes = lifes  # How much lifes left
+        self.lifes = lifes  # How much life left
         self.lost = False   # Have you lost?
+        pygame.font.init()
+        self.font_score = pygame.font.Font('./fonts/pixel.ttf', 36)
 
 
     def refresh_area(self, screen):
