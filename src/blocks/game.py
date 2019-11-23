@@ -6,8 +6,6 @@ from src.bomberman import Bomberman
 from src.camera import Camera, camera_func
 
 
-
-
 class Game:
     def __init__(self, width=800, height=625):
         self.width = width
