@@ -8,18 +8,15 @@ from src.camera import Camera, camera_func
 
 class Game:
     def __init__(self, width=800, height=625):
+        self.area = Area()
+        self.bomberman = Bomberman()
+        self.camera = Camera(camera_func, self.area.width, self.area.height)
         self.width = width
         self.height = height
         self.size = (width, height)
         self.game_over = False
         self.screen = pygame.display.set_mode(self.size)
         pygame.init()
-        self.create_objects()
-
-    def create_objects(self):
-        self.area = Area()
-        self.bomberman = Bomberman()
-        self.camera = Camera(camera_func, self.area.width, self.area.height)
 
     def process_event(self):
         for event in pygame.event.get():
@@ -71,7 +68,7 @@ class Game:
             self.bomberman.process_logic(self.area.width, self.area.height, self.area)
             self.process_collisions()
             self.process_move()
-            self.bomberman.process_draw(self.screen, self.camera)
+            self.bomberman.process_draw(self.screen, self.camera, )
             pygame.display.flip()
             pygame.time.wait(10)
         sys.exit()

@@ -16,7 +16,7 @@ class Bomberman(Cell):
         self.can_move_Up = True
         self.can_move_Down = True
 
-    def process_draw(self, screen, camera):
+    def process_draw(self, screen, camera, x=0, y=75):
         screen.blit(self.image, camera.apply(self, 5))
 
     def process_logic(self, width, height, area):

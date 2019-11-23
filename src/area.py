@@ -1,5 +1,4 @@
 from random import randint
-
 from src.blocks.block import Block
 from src.blocks.brick import Brick
 from src.blocks.grass import Grass

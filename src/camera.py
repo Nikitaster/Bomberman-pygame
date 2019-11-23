@@ -2,8 +2,8 @@ from pygame.rect import Rect
 
 
 class Camera:
-    def __init__(self, camera_func, width, height):
-        self.camera_func = camera_func
+    def __init__(self, camera_funcs, width, height):
+        self.camera_func = camera_funcs
         self.state = Rect(0, 0, width, height)
 
     def update(self, target):
