@@ -63,7 +63,7 @@ class Game:
 
         self.screen.fill((75, 100, 150))
         self.camera.update(self.bomberman)
-        self.area.process_draw(self.screen, self.camera, self.bomberman.speed)
+        self.area.process_draw(self.screen, self.camera)
 
     def main_loop(self):
         while not self.game_over:

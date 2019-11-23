@@ -62,6 +62,6 @@ class Area:
                 elif self.area_data[i][j] == 2:
                     self.objects.append(Brick(j * 50, i * 50 + 75))
 
-    def process_draw(self, screen, camera, speed):
+    def process_draw(self, screen, camera):
         for i in self.objects:
-            screen.blit(i.image, camera.apply(i, speed))
+            screen.blit(i.image, camera.apply(i))
