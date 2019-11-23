@@ -110,7 +110,7 @@ class Player_Score:
         self.text_score = self.scores_font.render('Score:{}'.format(self.score), 0, (255, 255, 255))
         screen.blit(self.text_name, (10, 2))
         screen.blit(self.text_life, (10, 43))
-        screen.blit(self.text_time, (610, 2))
+        screen.blit(self.text_time, (610, 22))
         screen.blit(self.text_score, (200, 43))
 
     def add_time(self, time_add=-1):  # How much time you want to add? Or you want to set it less?
@@ -129,6 +129,7 @@ class Player_Score:
     def get_time_left(self):
         now_time = self.time_left - (time.time() - self.start_time)
         if now_time <= 0:
+            self.lost = True
             print("GameOver")
             return "{0:.0f}".format(0)
         return "{0:.0f}".format(now_time)
