@@ -91,11 +91,23 @@ class Player_Score:
         self.lifes = lifes  # How much life left
         self.lost = False   # Have you lost?
         pygame.font.init()
-        self.font_score = pygame.font.Font('./fonts/pixel.ttf', 36)
+        self.scores_font = pygame.font.Font('./fonts/pixel.ttf', 30)
+        self.text_name = self.scores_font.render('', 0, (255, 255, 255))
+        self.text_time = self.scores_font.render('', 0, (255, 255, 255))
+        self.text_life = self.scores_font.render('', 0, (255, 255, 255))
+        self.text_score = self.scores_font.render('', 0, (255, 255, 255))
 
 
     def refresh_area(self, screen):
         pygame.draw.rect(screen, (200, 200, 200), (0, 0, 800, 75), 0)
+        self.text_name = self.scores_font.render('Name:{}'.format(self.name), 0, (255, 255, 255))
+        self.text_time = self.scores_font.render('Time:{}'.format(self.time), 0, (255, 255, 255))
+        self.text_life = self.scores_font.render('Lifes:{}'.format(self.lifes), 0, (255, 255, 255))
+        self.text_score = self.scores_font.render('Score:{}'.format(self.score), 0, (255, 255, 255))
+        screen.blit(self.text_name, (5, 0))
+        screen.blit(self.text_life, (5, 45))
+        screen.blit(self.text_time, (620, 0))
+        screen.blit(self.text_score, (200, 45))
 
 
     def add_time(self, time_add = -1):
