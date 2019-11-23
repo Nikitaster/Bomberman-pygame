@@ -8,6 +8,10 @@ class Bomberman(Cell):
 
     def __init__(self, x=50, y=125):
         super().__init__(x, y)
+        self.shift_xl = 0
+        self.shift_xr = 0
+        self.shift_yu = 0
+        self.shift_yd = 0
         self.shift_x = 0
         self.shift_y = 0
         self.speed = 5
@@ -21,11 +25,11 @@ class Bomberman(Cell):
 
     def process_logic(self, width, height, area):
         if self.rect.x + self.shift_x < 50:
-            self.shift_x = 0
+            self.shift_xl = 0
         if self.rect.y + self.shift_y < 125:
-            self.shift_y = 0
+            self.shift_yu = 0
         if self.rect.y + self.shift_y > height - 25:
-            self.shift_y = 0
+            self.shift_yd = 0
         if self.rect.left < 50:
             self.rect.left = 50
         if self.rect.top < 125:

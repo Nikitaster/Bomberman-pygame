@@ -16,6 +16,10 @@ class Game:
         self.size = (width, height)
         self.game_over = False
         self.screen = pygame.display.set_mode(self.size)
+        self.is_pressed_up = False
+        self.is_pressed_left = False
+        self.is_pressed_down = False
+        self.is_pressed_right = False
         pygame.init()
 
     def process_event(self):
@@ -24,16 +28,36 @@ class Game:
                 self.game_over = True
             if event.type == pygame.KEYDOWN:
                 if event.key == 97 or event.key == 276 or event.key == 160:
-                    self.bomberman.shift_x = -self.bomberman.speed
+                    self.is_pressed_left = True
+                    self.bomberman.shift_xl = -self.bomberman.speed
                 elif event.key == 100 or event.key == 275 or event.key == 162:
-                    self.bomberman.shift_x = self.bomberman.speed
+                    self.is_pressed_right = True
+                    self.bomberman.shift_xr = self.bomberman.speed
                 elif event.key == 115 or event.key == 274 or event.key == 161:
-                    self.bomberman.shift_y = self.bomberman.speed
+                    self.is_pressed_down = True
+                    self.bomberman.shift_yd = self.bomberman.speed
                 elif event.key == 119 or event.key == 273 or event.key == 172:
-                    self.bomberman.shift_y = -self.bomberman.speed
+                    self.is_pressed_up = True
+                    self.bomberman.shift_yu = -self.bomberman.speed
+                self.bomberman.shift_x = self.bomberman.shift_xl + self.bomberman.shift_xr
+                self.bomberman.shift_y = self.bomberman.shift_yu + self.bomberman.shift_yd
             if event.type == pygame.KEYUP:
-                self.bomberman.shift_x = 0
-                self.bomberman.shift_y = 0
+                if event.key == 97 or event.key == 276 or event.key == 160:
+                    self.is_pressed_left = False
+                    self.bomberman.shift_xl = 0
+                elif event.key == 100 or event.key == 275 or event.key == 162:
+                    self.is_pressed_right = False
+                    self.bomberman.shift_xr = 0
+                elif event.key == 115 or event.key == 274 or event.key == 161:
+                    self.is_pressed_down = False
+                    self.bomberman.shift_yd = 0
+                elif event.key == 119 or event.key == 273 or event.key == 172:
+                    self.is_pressed_up = False
+                    self.bomberman.shift_yu = 0
+                self.bomberman.shift_x = self.bomberman.shift_xl + self.bomberman.shift_xr
+                self.bomberman.shift_y = self.bomberman.shift_yu + self.bomberman.shift_yd
+
+
 
     def process_collisions(self):
         self.bomberman.can_move_Right = True
