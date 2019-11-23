@@ -11,15 +11,16 @@ class Game:
         self.area = Area()
         self.bomberman = Bomberman()
         self.camera = Camera(camera_func, self.area.width, self.area.height)
-        ####
-        self.player = Player_Score()
-        ####
+
         self.width = width
         self.height = height
         self.size = (width, height)
         self.game_over = False
         self.screen = pygame.display.set_mode(self.size)
         pygame.init()
+        ####
+        self.player = Player_Score()
+        ####
 
     def process_event(self):
         for event in pygame.event.get():
@@ -67,7 +68,7 @@ class Game:
         self.camera.update(self.bomberman)
         self.area.process_draw(self.screen, self.camera, self.bomberman.speed)
         ####
-        self.player.refresh_area(self.camera)
+        self.player.refresh_area(self.screen)
         ####
 
     def main_loop(self):
@@ -83,16 +84,16 @@ class Game:
 
 
 class Player_Score:
-    def __init__(self, name = 'noname', score = 0, time = 200, lifes = 3):
-        self.name = name    #Player name
-        self.score = score  #Player score
-        self.time = time    #How much time left
-        self.lifes = lifes  #How much lifes left
-        self.lost = False   #Have you lost?
+    def __init__(self, name = 'New player', score = 0, time = 200, lifes = 3):
+        self.name = name    # Player name
+        self.score = score  # Player score
+        self.time = time    # How much time left
+        self.lifes = lifes  # How much lifes left
+        self.lost = False   # Have you lost?
 
 
-    def refresh_area(self, camera):
-        pygame.draw.rect(camera.apply(), (200, 200, 200), (0, 0, 600, 125), 0)
+    def refresh_area(self, screen):
+        pygame.draw.rect(screen, (200, 200, 200), (0, 0, 800, 75), 0)
 
 
     def add_time(self, time_add = -1):
