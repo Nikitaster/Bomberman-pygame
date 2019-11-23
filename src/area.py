@@ -18,9 +18,11 @@ class Area:
         ]
         self.area_data = []
         self.objects = []
-        self.create_area()
+        self.create_logic_area()
+        self.create_logic_bricks()
+        self.create_object_area()
 
-    def create_area(self):
+    def create_logic_area(self):
         h = self.height // 50
         w = self.width // 50
         # Fill list with grass
@@ -38,6 +40,8 @@ class Area:
         for i in range(2, 12, 2):
             for j in range(2, 30, 2):
                 self.area_data[i][j] = 0
+
+    def create_logic_bricks(self):
         # Fill list with bricks
         for i in range(randint(50, 75)):
             x = randint(1, 29)
@@ -50,8 +54,7 @@ class Area:
         self.area_data[1][2] = 1
         self.area_data[2][1] = 1
 
-        for i in range(h):
-            print(self.area_data[i])
+    def create_object_area(self):
         # Fill area with all blocks
         for i in range(13):
             for j in range(31):
