@@ -1,12 +1,3 @@
-# Над кодом работали:
-# Никита Гудков
-# Иван Сафонов
-# Андрей Ткачёв
-# Дамир Федотов
-# Анна Бушэ
-# Харченко Владислав
-# Колесникова Алина
-
 import sys
 import pygame
 from random import randint
@@ -34,7 +25,6 @@ def camera_func(camera, target_rect):
     l = max(-(camera.width - 950), l)       # Не движемся дальше правой границы
     t = max(-(camera.height-650), t)        # Не движемся дальше нижней границы
     t = min(0, t)                           # Не движемся дальше верхней границы
-    # t = 200
     return Rect(l, t, w, h)
 
 
@@ -90,12 +80,12 @@ class Area:
         ]
         self.area_data = []
         self.objects = []
-
         self.create_area()
 
     def create_area(self):
         h = self.height // 50
         w = self.width // 50
+        # Fill list with grass
         for i in range(h):
             self.area_data.append([])
         for i in range(h):
@@ -110,7 +100,7 @@ class Area:
         for i in range(2, 12, 2):
             for j in range(2, 30, 2):
                 self.area_data[i][j] = 0
-
+        # Fill list with bricks
         for i in range(randint(50, 75)):
             x = randint(1, 29)
             y = randint(1, 11)
@@ -124,7 +114,7 @@ class Area:
 
         for i in range(h):
             print(self.area_data[i])
-
+        # Fill area with all blocks
         for i in range(13):
             for j in range(31):
                 if self.area_data[i][j] == 0:
@@ -153,28 +143,19 @@ class Bomberman(Cell):
         self.can_move_Down = True
 
     def process_draw(self, screen, camera):
-        # screen.blit(self.image, self.rect)
         screen.blit(self.image, camera.apply(self, 5))
 
     def process_logic(self, width, height, area):
         if self.rect.x + self.shift_x < 50:
             self.shift_x = 0
-        # if self.rect.x + self.shift_x > 705:
-        #     self.shift_x = 0
-
         if self.rect.y + self.shift_y < 125:
             self.shift_y = 0
         if self.rect.y + self.shift_y > height - 25:
             self.shift_y = 0
-
-        # print(self.rect.x)
-
         if self.rect.left < 50:
             self.rect.left = 50
         if self.rect.top < 125:
             self.rect.top = 125
-        # if self.rect.x > 700:
-        #     self.rect.x = 700
         if self.rect.left < 50:
             self.rect.right = 50
 
@@ -217,7 +198,6 @@ class Game:
                     self.bomberman.shift_y = self.bomberman.speed
                 elif event.key == 119 or event.key == 273 or event.key == 172:
                     self.bomberman.shift_y = -self.bomberman.speed
-                # print(event.key)
             if event.type == pygame.KEYUP:
                 self.bomberman.shift_x = 0
                 self.bomberman.shift_y = 0
@@ -227,7 +207,7 @@ class Game:
         self.bomberman.can_move_Left = True
         self.bomberman.can_move_Up = True
         self.bomberman.can_move_Down = True
-
+        # Collisions
         for objects in self.area.objects:
             if objects.type != 'Grass':
                 if objects.rect.colliderect(
@@ -250,15 +230,12 @@ class Game:
         while not self.game_over:
             self.process_event()
             self.screen.fill((75, 100, 150))
-
             self.camera.update(self.bomberman)
             self.area.process_draw(self.screen, self.camera, self.bomberman.speed)
-
             self.bomberman.process_logic(self.area.width, self.area.height, self.area)
             self.process_collisions()
             self.process_move()
             self.bomberman.process_draw(self.screen, self.camera)
-
             pygame.display.flip()
             pygame.time.wait(10)
         sys.exit()
