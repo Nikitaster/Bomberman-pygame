@@ -34,11 +34,9 @@ class Game:
                     self.bomberman.shift_y = self.bomberman.speed
                 elif event.key == 119 or event.key == 273 or event.key == 172:
                     self.bomberman.shift_y = -self.bomberman.speed
-                elif event.key == 101 and not(self.is_bomb):
-                    print("Bomberman: ", self.bomberman.rect.x, self.bomberman.rect.y)
-                    self.bomb_x_in_area = int((self.bomberman.rect.x - (self.bomberman.rect.x % 50)) // 50)
-                    self.bomb_y_in_area = int((self.bomberman.rect.y - 75 - ((self.bomberman.rect.y - 75) % 50)) // 50)
-                    print("Bomb: ", self.bomb_x_in_area, self.bomb_y_in_area)
+                elif event.key == 101 and not(self.is_bomb): # Обработка нажатия клавиши E (для взрыва)
+                    self.bomb_x_in_area = int((self.bomberman.rect.x - (self.bomberman.rect.x % 50)) // 50)  # Координата x бомбы относительно блоков
+                    self.bomb_y_in_area = int((self.bomberman.rect.y - 75 - ((self.bomberman.rect.y - 75) % 50)) // 50)  # Координата y бомбы относительно блоков
                     self.bombs.append(Bomb(self.bomb_x_in_area * 50, self.bomb_y_in_area * 50 + 75))
                     self.is_bomb = True
 
@@ -52,7 +50,7 @@ class Game:
         self.bomberman.can_move_Up = True
         self.bomberman.can_move_Down = True
         # Collisions
-        all_objects = self.area.objects + self.bombs
+        all_objects = self.area.objects + self.bombs # Список всех объектов поля, для обработки коллизии
         for objects in all_objects:
             if objects.type == "Bomb" and objects.rect.colliderect(self.bomberman):
                 return
@@ -78,8 +76,6 @@ class Game:
         self.screen.fill((75, 100, 150))
         self.camera.update(self.bomberman)
         self.area.process_draw(self.screen, self.camera, self.bomberman.speed)
-
-        print(self.bombs)
         for bombs in self.bombs:
             self.screen.blit(bombs.image, self.camera.apply(bombs, self.bomberman.speed))
 

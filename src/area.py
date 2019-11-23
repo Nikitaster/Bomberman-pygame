@@ -14,18 +14,15 @@ class Bomb(Cell):
 
     def __init__(self, x=0, y=75):
         super().__init__(x, y)
-        print("Planted ", x, y)
         self.type = 'Bomb'
-        self.alive = 0
+        self.alive = 0 # Количество кадров, которое бомба существует
 
-    def try_blow(self):
+    def try_blow(self):  # Попытка взрыва по счетчику кадров
         if self.alive < 100:
-            print(self.alive)
             self.alive += 1
-            return False
+            return False  # Вернуть False, если счетчик времени не достиг значения взрыва
         else:
-            print(">BOOM<", self.rect.x, self.rect.y)
-            return True
+            return True  # Вернуть True, как только счетчик времени достиг значения взрыва
 
 
 class Area:
