@@ -1,8 +1,30 @@
 from random import randint
+
+import pygame
+
 from src.blocks.block import Block
 from src.blocks.brick import Brick
 from src.blocks.grass import Grass
+from src.cell import Cell
 
+
+class Bomb(Cell):
+
+    image = pygame.image.load("img/Bomb1.png")
+
+    def __init__(self, x=0, y=75):
+        super().__init__(x, y)
+        print("Planted ", x, y)
+        self.type = 'Bomb'
+        self.alive = 0
+    def try_blow(self):
+        if self.alive < 100:
+            print(self.alive)
+            self.alive += 1
+            return False
+        else:
+            print(">BOOM<", self.rect.x, self.rect.y)
+            return True
 
 class Area:
     def __init__(self, width=1550, height=650, size_block=50):

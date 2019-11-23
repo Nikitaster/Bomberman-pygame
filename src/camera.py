@@ -10,7 +10,7 @@ class Camera:
         self.state = self.camera_func(self.state, target.rect)
 
     def apply(self, target, speed):
-        return target.rect.move((self.state.x * speed / 4, self.state.y))
+        return target.rect.move((self.state.x * speed / 5, self.state.y))
 
 
 def camera_func(camera, target_rect):
