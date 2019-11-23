@@ -59,16 +59,19 @@ class Game:
     def process_move(self):
         self.bomberman.move()
 
+    def process_draw(self):
+
+        self.screen.fill((75, 100, 150))
+        self.camera.update(self.bomberman)
+        self.area.process_draw(self.screen, self.camera, self.bomberman.speed)
+
     def main_loop(self):
         while not self.game_over:
             self.process_event()
-            self.screen.fill((75, 100, 150))
-            self.camera.update(self.bomberman)
-            self.area.process_draw(self.screen, self.camera, self.bomberman.speed)
-            self.bomberman.process_logic(self.area.width, self.area.height, self.area)
             self.process_collisions()
             self.process_move()
-            self.bomberman.process_draw(self.screen, self.camera, )
+            self.process_draw()
+            self.bomberman.process_draw(self.screen, self.camera)
             pygame.display.flip()
             pygame.time.wait(10)
         sys.exit()

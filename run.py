@@ -1,4 +1,4 @@
-from src.blocks.game import Game
+from src.game import Game
 
 
 def main():
