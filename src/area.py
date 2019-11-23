@@ -17,6 +17,7 @@ class Bomb(Cell):
         print("Planted ", x, y)
         self.type = 'Bomb'
         self.alive = 0
+
     def try_blow(self):
         if self.alive < 100:
             print(self.alive)
@@ -25,6 +26,7 @@ class Bomb(Cell):
         else:
             print(">BOOM<", self.rect.x, self.rect.y)
             return True
+
 
 class Area:
     def __init__(self, width=1550, height=650, size_block=50):

@@ -19,6 +19,7 @@ class Game:
         self.screen = pygame.display.set_mode(self.size)
         pygame.init()
         self.is_bomb = False
+        self.bombs = []
 
     def process_event(self):
         for event in pygame.event.get():
@@ -34,11 +35,11 @@ class Game:
                 elif event.key == 119 or event.key == 273 or event.key == 172:
                     self.bomberman.shift_y = -self.bomberman.speed
                 elif event.key == 101 and not(self.is_bomb):
-                    #print("Bomberman: ", self.bomberman.rect.x, self.bomberman.rect.y)
+                    print("Bomberman: ", self.bomberman.rect.x, self.bomberman.rect.y)
                     self.bomb_x_in_area = int((self.bomberman.rect.x - (self.bomberman.rect.x % 50)) // 50)
                     self.bomb_y_in_area = int((self.bomberman.rect.y - 75 - ((self.bomberman.rect.y - 75) % 50)) // 50)
-                    #print("Bomb: ", self.bomb_x_in_area, self.bomb_y_in_area)
-                    self.area.area_data[self.bomb_x_in_area][self.bomb_y_in_area] = Bomb(self.bomb_x_in_area * 50, self.bomb_y_in_area * 50 + 75)
+                    print("Bomb: ", self.bomb_x_in_area, self.bomb_y_in_area)
+                    self.bombs.append(Bomb(self.bomb_x_in_area * 50, self.bomb_y_in_area * 50 + 75))
                     self.is_bomb = True
 
             if event.type == pygame.KEYUP:
@@ -51,7 +52,10 @@ class Game:
         self.bomberman.can_move_Up = True
         self.bomberman.can_move_Down = True
         # Collisions
-        for objects in self.area.objects:
+        all_objects = self.area.objects + self.bombs
+        for objects in all_objects:
+            if objects.type == "Bomb" and objects.rect.colliderect(self.bomberman):
+                return
             if objects.type != 'Grass':
                 if objects.rect.colliderect(
                         Bomberman(self.bomberman.rect.x + self.bomberman.speed, self.bomberman.rect.y)):
@@ -74,8 +78,10 @@ class Game:
         self.screen.fill((75, 100, 150))
         self.camera.update(self.bomberman)
         self.area.process_draw(self.screen, self.camera, self.bomberman.speed)
-        if self.is_bomb:
-            self.area.area_data[self.bomb_x_in_area][self.bomb_y_in_area].process_draw(self.screen, self.camera, int(self.bomb_x_in_area * 50), int(self.bomb_y_in_area * 50 + 75))
+
+        print(self.bombs)
+        for bombs in self.bombs:
+            self.screen.blit(bombs.image, self.camera.apply(bombs, self.bomberman.speed))
 
     def main_loop(self):
         while not self.game_over:
@@ -84,10 +90,13 @@ class Game:
             self.process_move()
             self.process_draw()
             self.bomberman.process_draw(self.screen, self.camera)
+
             if self.is_bomb:
-                if self.area.area_data[self.bomb_x_in_area][self.bomb_y_in_area].try_blow():
-                    self.area.area_data[self.bomb_x_in_area][self.bomb_y_in_area] = Grass(self.bomb_x_in_area * 50, self.bomb_y_in_area * 50 + 75)
-                    self.is_bomb = False
+                for i in range(len(self.bombs)):
+                    if self.bombs[i].try_blow():
+                        del self.bombs[i]
+                        self.is_bomb = False
+
             pygame.display.flip()
             pygame.time.wait(10)
         sys.exit()
