@@ -1,32 +1,12 @@
 import sys
 import pygame
 from random import randint
+
+from src.blocks.block import Block
+from src.blocks.brick import Brick
+from src.blocks.grass import Grass
 from src.camera import Camera, camera_func
 from src.cell import Cell
-
-
-class Block(Cell):
-    image = pygame.image.load("img/blocker.jpg")
-
-    def __init__(self, x=0, y=75):
-        super().__init__(x, y)
-        self.type = "Block"
-
-
-class Grass(Cell):
-    image = pygame.image.load("img/grass.jpg")
-
-    def __init__(self, x=0, y=75):
-        super().__init__(x, y)
-        self.type = "Grass"
-
-
-class Brick(Cell):
-    image = pygame.image.load("img/brick.jpg")
-
-    def __init__(self, x=0, y=75):
-        super().__init__(x, y)
-        self.type = "Brick"
 
 
 class Area:
