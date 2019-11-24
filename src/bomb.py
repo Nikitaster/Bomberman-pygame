@@ -1,45 +1,37 @@
 import pygame
 import pyganim
+import time
 from src.cell import Cell
-
-black = 0, 0, 0
-
-animation_delay = 1000  # скорость смены кадров
-animation_bomb = ['img/Bomb1.png',
-                  'img/Bomb2.png',
-                  'img/Bomb3.png',
-                  'img/Bomb4.png']
 
 
 class Bomb(Cell):
-    image = pygame.image.load("img/Bomb1.png")
+    animation_delay = 1000  # скорость смены кадров
+    animation_bomb = ['img/Bomb1.png',
+                      'img/Bomb2.png',
+                      'img/Bomb3.png']
+    image = pygame.image.load(animation_bomb[0])
 
     def __init__(self, x=0, y=75):
         super().__init__(x, y)
         self.type = 'Bomb'
-        self.alive = 0  # Количество кадров, которое бомба существует
-        self.bomb_x_in_area = 0
-        self.bomb_y_in_area = 0
-        self.start_ticks = pygame.time.get_ticks()
+        self.start_time = time.time()
+        self.end_time = self.start_time + len(self.animation_bomb)
         self.is_bomb = False
         self.boltAnim = []
-        for anim in animation_bomb:
-            self.boltAnim.append((anim, animation_delay))
+        for anim in self.animation_bomb:
+            self.boltAnim.append((anim, self.animation_delay))
         self.boltAnimBomb = pyganim.PygAnimation(self.boltAnim)
         self.boltAnimBomb.play()
 
-    def process_draw(self, screen, camera, x=0, y=75):
-        self.rect.x = x
-        self.rect.y = y
+    def process_draw(self, screen, camera):
+        screen.blit(self.image, camera.apply(self))
         self.boltAnimBomb.blit(self.image)
-        screen.blit(self.image, self.rect)
 
     def try_blow(self):  # Попытка взрыва по счетчику кадров
-        if (pygame.time.get_ticks()-self.start_ticks) <= 2000:
-            print(pygame.time.get_ticks()-self.start_ticks)
+        if (time.time()-self.start_time) <= self.end_time - time.time():
             return False  # Вернуть False, если счетчик времени не достиг значения взрыва
         else:
-            print(pygame.time.get_ticks() - self.start_ticks)
+            self.boltAnimBomb.stop()
             return True  # Вернуть True, как только счетчик времени достиг значения взрыва
 
 

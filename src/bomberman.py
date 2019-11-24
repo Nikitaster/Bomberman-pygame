@@ -15,9 +15,11 @@ class Bomberman(Cell):
         self.can_move_Left = True
         self.can_move_Up = True
         self.can_move_Down = True
+        # for bonus:
+        self.max_count_bombs = 1
 
     def process_draw(self, screen, camera, x=0, y=75):
-        screen.blit(self.image, camera.apply(self, 5))
+        screen.blit(self.image, camera.apply(self))
 
     def process_logic(self, width, height, area):
         if self.rect.x + self.shift_x < 50:

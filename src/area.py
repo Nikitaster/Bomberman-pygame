@@ -67,4 +67,4 @@ class Area:
 
     def process_draw(self, screen, camera, speed):
         for i in self.objects:
-            screen.blit(i.image, camera.apply(i, speed))
+            screen.blit(i.image, camera.apply(i))
