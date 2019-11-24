@@ -70,9 +70,6 @@ class Area:
         self.area_data[1][1] = 1
         self.area_data[1][2] = 1
         self.area_data[2][1] = 1
-
-        for i in range(h):
-            print(self.area_data[i])
         # Fill area with all blocks
         for i in range(13):
             for j in range(31):

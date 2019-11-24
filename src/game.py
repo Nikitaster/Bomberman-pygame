@@ -2,9 +2,9 @@ import sys
 import pygame
 
 from src.area import Area, Bomb
-from src.blocks.grass import Grass
 from src.bomberman import Bomberman
 from src.camera import Camera, camera_func
+from src.score import Player_Score
 
 
 class Game:
@@ -15,6 +15,8 @@ class Game:
         self.width = width
         self.height = height
         self.size = (width, height)
+        self.bomb_x_in_area = 0
+        self.bomb_y_in_area = 0
         self.game_over = False
         self.screen = pygame.display.set_mode(self.size)
         pygame.init()
@@ -37,9 +39,11 @@ class Game:
                     self.bomberman.shift_y = self.bomberman.speed
                 elif event.key == 119 or event.key == 273 or event.key == 172:
                     self.bomberman.shift_y = -self.bomberman.speed
-                elif event.key == 101 and not(self.is_bomb): # Обработка нажатия клавиши E (для взрыва)
-                    self.bomb_x_in_area = int((self.bomberman.rect.x - (self.bomberman.rect.x % 50)) // 50)  # Координата x бомбы относительно блоков
-                    self.bomb_y_in_area = int((self.bomberman.rect.y - 75 - ((self.bomberman.rect.y - 75) % 50)) // 50)  # Координата y бомбы относительно блоков
+                elif event.key == 101 and not self.is_bomb:  # Обработка нажатия клавиши E (для взрыва)
+                    self.bomb_x_in_area = int((self.bomberman.rect.x - (
+                                self.bomberman.rect.x % 50)) // 50)  # Координата x бомбы относительно блоков
+                    self.bomb_y_in_area = int((self.bomberman.rect.y - 75 - (
+                                (self.bomberman.rect.y - 75) % 50)) // 50)  # Координата y бомбы относительно блоков
                     self.bombs.append(Bomb(self.bomb_x_in_area * 50, self.bomb_y_in_area * 50 + 75))
                     self.is_bomb = True
 
@@ -53,7 +57,7 @@ class Game:
         self.bomberman.can_move_Up = True
         self.bomberman.can_move_Down = True
         # Collisions
-        all_objects = self.area.objects + self.bombs # Список всех объектов поля, для обработки коллизии
+        all_objects = self.area.objects + self.bombs  # Список всех объектов поля, для обработки коллизии
         for objects in all_objects:
             if objects.type == "Bomb" and objects.rect.colliderect(self.bomberman):
                 return
@@ -78,12 +82,12 @@ class Game:
         self.screen.fill((75, 100, 150))
         self.camera.update(self.bomberman)
         self.area.process_draw(self.screen, self.camera, self.bomberman.speed)
-        ####
+        # Score
         self.player.refresh_area(self.screen)
         # Add score: self.player.add_score(<how_much_score>)
         # Add time:  self.player.add_time(<how_much_time>)
         # Add life:  self.player.add_life(<how_much_time>)
-        ####
+        # Bomb
         for bombs in self.bombs:
             self.screen.blit(bombs.image, self.camera.apply(bombs, self.bomberman.speed))
 
@@ -94,62 +98,11 @@ class Game:
             self.process_move()
             self.process_draw()
             self.bomberman.process_draw(self.screen, self.camera)
-
             if self.is_bomb:
                 for i in range(len(self.bombs)):
                     if self.bombs[i].try_blow():
                         del self.bombs[i]
                         self.is_bomb = False
-
             pygame.display.flip()
             pygame.time.wait(10)
         sys.exit()
-
-
-class Player_Score:
-    def __init__(self, name='New player', score=0, time_left=200, lifes=3):
-        self.name = name  # Player name
-        self.score = score  # Player score
-        self.start_time = time.time()
-        self.end_time = self.start_time + 200
-        self.time_left = time_left  # How much time left
-        self.lifes = lifes  # How much life left
-        self.lost = False  # Have you lost?
-        pygame.font.init()  # Start fonts
-        self.scores_font = pygame.font.Font('./fonts/pixel.ttf', 30)  # Create a font
-        self.text_name = self.scores_font.render('', 0, (255, 255, 255))  # declaration
-        self.text_time = self.scores_font.render('', 0, (255, 255, 255))  # declaration
-        self.text_life = self.scores_font.render('', 0, (255, 255, 255))  # declaration
-        self.text_score = self.scores_font.render('', 0, (255, 255, 255))  # declaration
-
-    def refresh_area(self, screen):
-        pygame.draw.rect(screen, (100, 110, 100), (0, 0, 800, 75), 0)
-        self.text_name = self.scores_font.render('Name:{}'.format(self.name), 0, (255, 255, 255))
-        self.text_time = self.scores_font.render('Time:{}'.format(self.get_time_left()), 0, (255, 255, 255))
-        self.text_life = self.scores_font.render('Lifes:{}'.format(self.lifes), 0, (255, 255, 255))
-        self.text_score = self.scores_font.render('Score:{}'.format(self.score), 0, (255, 255, 255))
-        screen.blit(self.text_name, (10, 2))
-        screen.blit(self.text_life, (10, 43))
-        screen.blit(self.text_time, (610, 22))
-        screen.blit(self.text_score, (200, 43))
-
-    def add_time(self, time_add=-1):  # How much time you want to add? Or you want to set it less?
-        self.time_left += time_add
-        if self.time_left <= 0:
-            self.lost = True
-
-    def add_life(self, lifes_add=-1):  # How much lifes you want to give? Or you want to kill him?
-        self.lifes += lifes_add;
-        if self.lifes <= 0:
-            self.lost = True
-
-    def add_score(self, score_add=0):  # How much score you want to add?
-        self.score += score_add
-
-    def get_time_left(self):
-        now_time = self.time_left - (time.time() - self.start_time)
-        if now_time <= 0:
-            self.lost = True
-            print("GameOver")
-            return "{0:.0f}".format(0)
-        return "{0:.0f}".format(now_time)
