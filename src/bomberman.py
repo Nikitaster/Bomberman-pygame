@@ -8,10 +8,10 @@ class Bomberman(Cell):
 
     def __init__(self, x=50, y=125):
         super().__init__(x, y)
-        self.shift_xl = 0
-        self.shift_xr = 0
-        self.shift_yu = 0
-        self.shift_yd = 0
+        self.shift_x_left = 0
+        self.shift_x_right = 0
+        self.shift_y_up = 0
+        self.shift_y_down = 0
         self.shift_x = 0
         self.shift_y = 0
         self.speed = 5
@@ -23,13 +23,13 @@ class Bomberman(Cell):
     def process_draw(self, screen, camera, x=0, y=75):
         screen.blit(self.image, camera.apply(self))
 
-    def process_logic(self, width, height, area):
+    def process_logic(self, height):
         if self.rect.x + self.shift_x < 50:
-            self.shift_xl = 0
+            self.shift_x_left = 0
         if self.rect.y + self.shift_y < 125:
-            self.shift_yu = 0
+            self.shift_y_up = 0
         if self.rect.y + self.shift_y > height - 25:
-            self.shift_yd = 0
+            self.shift_y_down = 0
         if self.rect.left < 50:
             self.rect.left = 50
         if self.rect.top < 125:
