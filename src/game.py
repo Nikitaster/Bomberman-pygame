@@ -1,9 +1,12 @@
 import sys
 import pygame
 
-from src.area import Area, Bomb
-from src.blocks.grass import Grass
+black = 0, 0, 0
+
+from src.area import Area
+# from src.blocks.grass import Grass
 from src.bomberman import Bomberman
+from src.bomb import Bomb
 from src.camera import Camera, camera_func
 
 
@@ -11,6 +14,7 @@ class Game:
     def __init__(self, width=800, height=625):
         self.area = Area()
         self.bomberman = Bomberman()
+        self.bomb = Bomb()
         self.camera = Camera(camera_func, self.area.width, self.area.height)
         self.width = width
         self.height = height
@@ -18,7 +22,6 @@ class Game:
         self.game_over = False
         self.screen = pygame.display.set_mode(self.size)
         pygame.init()
-        self.is_bomb = False
         self.bombs = []
 
     def process_event(self):
@@ -34,11 +37,13 @@ class Game:
                     self.bomberman.shift_y = self.bomberman.speed
                 elif event.key == 119 or event.key == 273 or event.key == 172:
                     self.bomberman.shift_y = -self.bomberman.speed
-                elif event.key == 101 and not(self.is_bomb): # Обработка нажатия клавиши E (для взрыва)
-                    self.bomb_x_in_area = int((self.bomberman.rect.x - (self.bomberman.rect.x % 50)) // 50)  # Координата x бомбы относительно блоков
-                    self.bomb_y_in_area = int((self.bomberman.rect.y - 75 - ((self.bomberman.rect.y - 75) % 50)) // 50)  # Координата y бомбы относительно блоков
-                    self.bombs.append(Bomb(self.bomb_x_in_area * 50, self.bomb_y_in_area * 50 + 75))
-                    self.is_bomb = True
+                elif event.key == 101 and not self.bomb.is_bomb:  # Обработка нажатия клавиши E (для взрыва)
+                    self.bomb.bomb_x_in_area = int((self.bomberman.rect.x - (
+                            self.bomberman.rect.x % 50)) // 50)  # Координата x бомбы относительно блоков
+                    self.bomb.bomb_y_in_area = int((self.bomberman.rect.y - 75 - (
+                            (self.bomberman.rect.y - 75) % 50)) // 50)  # Координата y бомбы относительно блоков
+                    self.bombs.append(Bomb(self.bomb.bomb_x_in_area * 50, self.bomb.bomb_y_in_area * 50 + 75))
+                    self.bomb.is_bomb = True
 
             if event.type == pygame.KEYUP:
                 self.bomberman.shift_x = 0
@@ -50,7 +55,7 @@ class Game:
         self.bomberman.can_move_Up = True
         self.bomberman.can_move_Down = True
         # Collisions
-        all_objects = self.area.objects + self.bombs # Список всех объектов поля, для обработки коллизии
+        all_objects = self.area.objects + self.bombs  # Список всех объектов поля, для обработки коллизии
         for objects in all_objects:
             if objects.type == "Bomb" and objects.rect.colliderect(self.bomberman):
                 return
@@ -72,12 +77,13 @@ class Game:
         self.bomberman.move()
 
     def process_draw(self):
-
         self.screen.fill((75, 100, 150))
         self.camera.update(self.bomberman)
         self.area.process_draw(self.screen, self.camera, self.bomberman.speed)
-        for bombs in self.bombs:
-            self.screen.blit(bombs.image, self.camera.apply(bombs, self.bomberman.speed))
+        # self.bomb.image.fill(black)
+        # self.bomb.boltAnimBomb.blit(self.bomb.image)
+        # for bombs in self.bombs:
+        #     self.screen.blit(bombs.image, self.camera.apply(bombs, self.bomberman.speed))
 
     def main_loop(self):
         while not self.game_over:
@@ -86,12 +92,13 @@ class Game:
             self.process_move()
             self.process_draw()
             self.bomberman.process_draw(self.screen, self.camera)
+            self.bomb.process_draw(self.screen, self.camera)
 
-            if self.is_bomb:
-                for i in range(len(self.bombs)):
-                    if self.bombs[i].try_blow():
-                        del self.bombs[i]
-                        self.is_bomb = False
+            # if self.bomb.is_bomb:
+            #     for i in range(len(self.bombs)):
+            #         if self.bombs[i].try_blow():
+            #             del self.bombs[i]
+            #             self.bomb.is_bomb = False
 
             pygame.display.flip()
             pygame.time.wait(10)

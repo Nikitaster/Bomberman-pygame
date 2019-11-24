@@ -2,6 +2,7 @@ import pygame
 
 from src.cell import Cell
 
+
 class Bomberman(Cell):
     image = pygame.image.load("img/Front.png")
 
