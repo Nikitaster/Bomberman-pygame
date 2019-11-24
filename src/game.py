@@ -153,12 +153,12 @@ class Game:
         can_generate = True
         for i in range(self.bomberman.long_fire):
             if can_generate:
-                self.fires.append(FireHorizontal(x, y - 50 * i))
+                self.fires.append(FireVertical(x, y - 50 * i))
                 can_generate = self.check_fire_gen()
                 if not can_generate:
                     self.fires.pop()
                     self.fires.pop()
-                    self.fires.append(FireHorizontal(x, y - 50 * (i - 1)))
+                    self.fires.append(FireVertical(x, y - 50 * (i - 1)))
 
     def check_fire_gen(self):
         for i in self.fires:
