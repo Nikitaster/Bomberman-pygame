@@ -37,7 +37,7 @@ class Bomb(Cell):
 
 class Fire(Cell):
     image_left = pygame.image.load('img/Bomb4.png')
-    image_right = pygame.image.load('img/Bomb4.png')
+    image_right = pygame.image.load('img/Bomb3.png')
     image_up = pygame.image.load('img/Bomb4.png')
     image_down = pygame.image.load('img/Bomb4.png')
     image_middle = pygame.image.load('img/Bomb4.png')

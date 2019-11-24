@@ -63,9 +63,10 @@ class Game:
             if objects.type == "Bomb" and objects.rect.colliderect(self.bomberman):
                 return
             if objects.type == "Fire" and objects.rect.colliderect(self.bomberman):
-                print("БОБИК УМЕР")
+                print("Game Over")
+                self.game_over = True
                 return
-            if objects.type != 'Grass':
+            if objects.type != 'Grass' and objects.type != 'Fire':
                 if objects.rect.colliderect(
                         Bomberman(self.bomberman.rect.x + self.bomberman.speed, self.bomberman.rect.y)):
                     self.bomberman.can_move_Right = False
@@ -117,12 +118,55 @@ class Game:
             bomb.process_draw(self.screen, self.camera)
 
     def generate_fires(self, x, y):
-        self.fires.append(FireMiddle(x, y))
+        if len(self.fires) == 0:
+            self.fires.append(FireMiddle(x, y))
+        can_generate = True
         for i in range(self.bomberman.long_fire):
-            self.fires.append(FireMiddle(x + 50 * i, y))
-            self.fires.append(FireMiddle(x, y + 50 * i))
-            self.fires.append(FireMiddle(x - 50 * i, y))
-            self.fires.append(FireMiddle(x, y - 50 * i))
+            if can_generate:
+                self.fires.append(FireHorizontal(x + 50 * i, y))
+                can_generate = self.check_fire_gen()
+                if not can_generate:
+                    self.fires.pop()
+                    self.fires.pop()
+                    self.fires.append(FireHorizontal(x, y + 50 * (i - 1)))
+
+        can_generate = True
+        for i in range(self.bomberman.long_fire):
+            if can_generate:
+                self.fires.append(FireVertical(x, y + 50 * i))
+                can_generate = self.check_fire_gen()
+                if not can_generate:
+                    self.fires.pop()
+                    self.fires.pop()
+                    self.fires.append(FireVertical(x, y + 50 * (i - 1)))
+
+        can_generate = True
+        for i in range(self.bomberman.long_fire):
+            if can_generate:
+                self.fires.append(FireHorizontal(x - 50 * i, y))
+                can_generate = self.check_fire_gen()
+                if not can_generate:
+                    self.fires.pop()
+                    self.fires.pop()
+                    self.fires.append(FireHorizontal(x - 50 * (i - 1), y))
+
+        can_generate = True
+        for i in range(self.bomberman.long_fire):
+            if can_generate:
+                self.fires.append(FireHorizontal(x, y - 50 * i))
+                can_generate = self.check_fire_gen()
+                if not can_generate:
+                    self.fires.pop()
+                    self.fires.pop()
+                    self.fires.append(FireHorizontal(x, y - 50 * (i - 1)))
+
+    def check_fire_gen(self):
+        for i in self.fires:
+            for obj in self.area.objects:
+                if obj.type == 'Block' and obj.rect.colliderect(i):
+                    print("COLLIDE")
+                    return False
+        return True
 
     def main_loop(self):
         while not self.game_over:
