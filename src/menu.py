@@ -5,7 +5,7 @@ import pygame
 class MainMenu:
 
     def __init__(self, width=800, height=725):
-        self.image = pygame.image.load("img/menu/img_name.png")
+        self.image = pygame.image.load("../img/menu/img_name.png")
         self.width = width
         self.height = height
         self.game_over = False

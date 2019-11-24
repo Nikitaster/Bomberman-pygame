@@ -1,5 +1,6 @@
 from src.game import Game
 
+
 def main():
     game = Game(800, 725)
     game.main_loop()
