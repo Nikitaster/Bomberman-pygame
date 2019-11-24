@@ -8,8 +8,7 @@ animation_delay = 1000  # скорость смены кадров
 animation_bomb = ['img/Bomb1.png',
                   'img/Bomb2.png',
                   'img/Bomb3.png',
-                  'img/Bomb4.png',
-                  'img/grass.jpg']
+                  'img/Bomb4.png']
 
 
 class Bomb(Cell):
@@ -21,6 +20,7 @@ class Bomb(Cell):
         self.alive = 0  # Количество кадров, которое бомба существует
         self.bomb_x_in_area = 0
         self.bomb_y_in_area = 0
+        self.start_ticks = pygame.time.get_ticks()
         self.is_bomb = False
         self.boltAnim = []
         for anim in animation_bomb:
@@ -35,8 +35,12 @@ class Bomb(Cell):
         screen.blit(self.image, self.rect)
 
     def try_blow(self):  # Попытка взрыва по счетчику кадров
-        if self.alive < 60:
-            self.alive += 1
+        if (pygame.time.get_ticks()-self.start_ticks) <= 2000:
+            print(pygame.time.get_ticks()-self.start_ticks)
             return False  # Вернуть False, если счетчик времени не достиг значения взрыва
         else:
+            print(pygame.time.get_ticks() - self.start_ticks)
             return True  # Вернуть True, как только счетчик времени достиг значения взрыва
+
+
+

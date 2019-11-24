@@ -80,10 +80,8 @@ class Game:
         self.screen.fill((75, 100, 150))
         self.camera.update(self.bomberman)
         self.area.process_draw(self.screen, self.camera, self.bomberman.speed)
-        # self.bomb.image.fill(black)
-        # self.bomb.boltAnimBomb.blit(self.bomb.image)
-        # for bombs in self.bombs:
-        #     self.screen.blit(bombs.image, self.camera.apply(bombs, self.bomberman.speed))
+        for bombs in self.bombs:
+            self.screen.blit(bombs.image, self.camera.apply(bombs, self.bomberman.speed))
 
     def main_loop(self):
         while not self.game_over:
@@ -92,13 +90,17 @@ class Game:
             self.process_move()
             self.process_draw()
             self.bomberman.process_draw(self.screen, self.camera)
-            self.bomb.process_draw(self.screen, self.camera)
+            if self.bomb.is_bomb:
+                self.bomb.process_draw(self.screen, self.camera, self.bomb.bomb_x_in_area * 50,
+                                       self.bomb.bomb_y_in_area * 50 + 75)
 
-            # if self.bomb.is_bomb:
-            #     for i in range(len(self.bombs)):
-            #         if self.bombs[i].try_blow():
-            #             del self.bombs[i]
-            #             self.bomb.is_bomb = False
+            if self.bomb.is_bomb:
+
+                for i in range(len(self.bombs)):
+                    if self.bombs[i].try_blow():
+                        del self.bombs[i]
+                        self.bomb.is_bomb = False
+
 
             pygame.display.flip()
             pygame.time.wait(10)
