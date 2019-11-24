@@ -1,8 +1,6 @@
 import sys
 import pygame
 
-black = 0, 0, 0
-
 from src.area import Area
 from src.blocks.grass import Grass
 from src.bomberman import Bomberman
