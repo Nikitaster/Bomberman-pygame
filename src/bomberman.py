@@ -4,7 +4,7 @@ from src.cell import Cell
 
 
 class Bomberman(Cell):
-    image = pygame.image.load("img/Front.png")
+    image = pygame.image.load("img/bomberman/stand/Front.png")
 
     def __init__(self, x=50, y=125):
         super().__init__(x, y)
