@@ -4,9 +4,9 @@ import pygame
 black = 0, 0, 0
 
 from src.area import Area
-# from src.blocks.grass import Grass
+from src.blocks.grass import Grass
 from src.bomberman import Bomberman
-from src.bomb import Bomb
+from src.bomb import Bomb, Fire, FireDown, FireHorizontal, FireLeft, FireMiddle, FireRight, FireUp, FireVertical
 from src.camera import Camera, camera_func
 
 
@@ -23,6 +23,7 @@ class Game:
         self.screen = pygame.display.set_mode(self.size)
         pygame.init()
         self.bombs = []
+        self.fires = []
 
     def process_event(self):
         for event in pygame.event.get():
@@ -37,7 +38,8 @@ class Game:
                     self.bomberman.shift_y = self.bomberman.speed
                 elif event.key == 119 or event.key == 273 or event.key == 172:
                     self.bomberman.shift_y = -self.bomberman.speed
-                elif event.key == 101 and not self.bomb.is_bomb:  # Обработка нажатия клавиши E (для взрыва)
+                # Обработка нажатия клавиши E (для взрыва)
+                elif (event.key == 101 or event.key == 173) and not self.bomb.is_bomb:
                     self.bomb.bomb_x_in_area = int((self.bomberman.rect.x - (
                             self.bomberman.rect.x % 50)) // 50)  # Координата x бомбы относительно блоков
                     self.bomb.bomb_y_in_area = int((self.bomberman.rect.y - 75 - (
@@ -56,9 +58,12 @@ class Game:
         self.bomberman.can_move_Up = True
         self.bomberman.can_move_Down = True
         # Collisions
-        all_objects = self.area.objects + self.bombs  # Список всех объектов поля, для обработки коллизии
+        all_objects = self.area.objects + self.bombs + self.fires  # Список всех объектов поля, для обработки коллизии
         for objects in all_objects:
             if objects.type == "Bomb" and objects.rect.colliderect(self.bomberman):
+                return
+            if objects.type == "Fire" and objects.rect.colliderect(self.bomberman):
+                print("БОБИК УМЕР")
                 return
             if objects.type != 'Grass':
                 if objects.rect.colliderect(
@@ -74,6 +79,11 @@ class Game:
                         Bomberman(self.bomberman.rect.x, self.bomberman.rect.y - self.bomberman.speed)):
                     self.bomberman.can_move_Up = False
 
+        for i in range(len(self.area.objects)):
+            for fire in self.fires:
+                if self.area.objects[i].type == 'Brick' and self.area.objects[i].rect.colliderect(fire):
+                    self.area.objects[i] = Grass(fire.rect.x, fire.rect.y)
+
     def process_move(self):
         self.bomberman.move()
 
@@ -82,11 +92,22 @@ class Game:
         self.camera.update(self.bomberman)
         self.area.process_draw(self.screen, self.camera, self.bomberman.speed)
         self.process_draw_bomb()
+        self.process_draw_fires()
         self.bomberman.process_draw(self.screen, self.camera)
+
+    def process_draw_fires(self):
+        for fire in self.fires:
+            fire.process_draw(self.screen, self.camera)
+
+    def process_logic_fires(self):
+        if len(self.fires):
+            if self.fires[0].try_blow():
+                self.fires.clear()
 
     def process_logic_bombs(self):
         for i in range(len(self.bombs)):
             if self.bombs[i].try_blow():
+                self.generate_fires(self.bombs[i].rect.x, self.bombs[i].rect.y)
                 self.bombs.pop(i)
                 self.bomb.is_bomb = False
                 break
@@ -95,6 +116,14 @@ class Game:
         for bomb in self.bombs:
             bomb.process_draw(self.screen, self.camera)
 
+    def generate_fires(self, x, y):
+        self.fires.append(FireMiddle(x, y))
+        for i in range(self.bomberman.long_fire):
+            self.fires.append(FireMiddle(x + 50 * i, y))
+            self.fires.append(FireMiddle(x, y + 50 * i))
+            self.fires.append(FireMiddle(x - 50 * i, y))
+            self.fires.append(FireMiddle(x, y - 50 * i))
+
     def main_loop(self):
         while not self.game_over:
             self.process_event()
@@ -102,6 +131,7 @@ class Game:
             self.process_move()
             self.process_draw()
             self.process_logic_bombs()
+            self.process_logic_fires()
 
             pygame.display.flip()
             pygame.time.wait(10)

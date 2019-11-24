@@ -17,6 +17,7 @@ class Bomberman(Cell):
         self.can_move_Down = True
         # for bonus:
         self.max_count_bombs = 1
+        self.long_fire = 2
 
     def process_draw(self, screen, camera, x=0, y=75):
         screen.blit(self.image, camera.apply(self))
