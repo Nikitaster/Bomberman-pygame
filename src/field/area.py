@@ -5,7 +5,7 @@ import pygame
 from src.blocks.block import Block
 from src.blocks.brick import Brick
 from src.blocks.grass import Grass
-from src.cell import Cell
+from src.blocks.cell import Cell
 
 
 class Bomb(Cell):

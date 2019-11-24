@@ -1,6 +1,6 @@
 import pygame
 
-from src.cell import Cell
+from src.blocks.cell import Cell
 
 
 class Brick(Cell):

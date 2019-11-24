@@ -1,10 +1,10 @@
 import sys
 import pygame
 
-from src.area import Area, Bomb
-from src.bomberman import Bomberman
-from src.camera import Camera, camera_func
-from src.score import Player_Score
+from src.field.area import Area, Bomb
+from src.charachters.bomberman import Bomberman
+from src.field.camera import Camera, camera_func
+from src.field.score import Player_Score
 
 
 class Game:
