@@ -4,7 +4,8 @@ import pygame
 from src.area import Area
 from src.blocks.grass import Grass
 from src.bomberman import Bomberman
-from src.bomb import Bomb, Fire, FireDown, FireHorizontal, FireLeft, FireMiddle, FireRight, FireUp, FireVertical
+from src.bomb import Bomb
+from src.fire import Fire, FireDown, FireHorizontal, FireLeft, FireMiddle, FireRight, FireUp, FireVertical
 from src.camera import Camera, camera_func
 
 
@@ -38,10 +39,20 @@ class Game:
                     self.bomberman.shift_y = -self.bomberman.speed
                 # Обработка нажатия клавиши E (для взрыва)
                 elif (event.key == 101 or event.key == 173) and not self.bomb.is_bomb:
-                    self.bomb.bomb_x_in_area = int((self.bomberman.rect.x - (
-                            self.bomberman.rect.x % 50)) // 50)  # Координата x бомбы относительно блоков
-                    self.bomb.bomb_y_in_area = int((self.bomberman.rect.y - 75 - (
-                            (self.bomberman.rect.y - 75) % 50)) // 50)  # Координата y бомбы относительно блоков
+                    self.bomb.bomb_larger_middle_x = self.bomb_place_x()
+                    self.bomb.bomb_larger_middle_y = self.bomb_place_y()
+                    if self.bomb.bomb_larger_middle_x:
+                        self.bomb.bomb_x_in_area = int((self.bomberman.rect.x - (
+                                self.bomberman.rect.x % 50)) // 50)
+                    elif not self.bomb.bomb_larger_middle_x:
+                        self.bomb.bomb_x_in_area = int((self.bomberman.rect.x - (
+                                self.bomberman.rect.x % 50)) // 50) + 1
+                    if self.bomb.bomb_larger_middle_y:
+                        self.bomb.bomb_y_in_area = int((self.bomberman.rect.y - 75 - (
+                                (self.bomberman.rect.y - 75) % 50)) // 50)
+                    elif not self.bomb.bomb_larger_middle_y:
+                        self.bomb.bomb_y_in_area = int((self.bomberman.rect.y - 75 - (
+                                (self.bomberman.rect.y - 75) % 50)) // 50) + 1
                     self.bombs.append(Bomb(self.bomb.bomb_x_in_area * 50, self.bomb.bomb_y_in_area * 50 + 75))
                     if len(self.bombs) == self.bomberman.max_count_bombs:
                         self.bomb.is_bomb = True
@@ -114,6 +125,24 @@ class Game:
     def process_draw_bomb(self):
         for bomb in self.bombs:
             bomb.process_draw(self.screen, self.camera)
+
+    def bomb_place_x(self):
+        if self.bomberman.rect.x <= int((self.bomberman.rect.x - (
+                self.bomberman.rect.x % 50)) // 50) * 50 + 25:
+            return True
+
+        if self.bomberman.rect.x > int((self.bomberman.rect.x - (
+                self.bomberman.rect.x % 50)) // 50) * 50 + 25:
+            return False
+
+    def bomb_place_y(self):
+        if self.bomberman.rect.y < int(((self.bomberman.rect.y - 75 - (
+                (self.bomberman.rect.y - 75) % 50)) // 50) * 50 + 75) + 25:
+            return True
+
+        if self.bomberman.rect.y >= int(((self.bomberman.rect.y - 75 - (
+                (self.bomberman.rect.y - 75) % 50)) // 50) * 50 + 75) + 25:
+            return False
 
     def generate_fires(self, x, y):
         if len(self.fires) == 0:
