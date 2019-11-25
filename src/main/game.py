@@ -3,7 +3,9 @@ import pygame
 
 from src.blocks.grass import Grass
 from src.bomb.bomb import Bomb
-from src.bomb.fire import FireMiddle, FireHorizontal, FireVertical
+from src.bomb.fires.firehoriz import FireHorizontal
+from src.bomb.fires.firemid import FireMiddle
+from src.bomb.fires.firevert import FireVertical
 from src.charachters.bomberman import Bomberman
 from src.field.area import Area
 from src.field.camera import Camera, camera_func
