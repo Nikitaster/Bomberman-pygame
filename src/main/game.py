@@ -114,16 +114,15 @@ class Game:
                 if objects.rect.colliderect(
                         Bomberman(self.bomberman.rect.x + self.bomberman.speed, self.bomberman.rect.y)):
                     self.bomberman.can_move_Right = False
-                elif objects.rect.colliderect(
+                if objects.rect.colliderect(
                         Bomberman(self.bomberman.rect.x - self.bomberman.speed, self.bomberman.rect.y)):
                     self.bomberman.can_move_Left = False
-                elif objects.rect.colliderect(
+                if objects.rect.colliderect(
                         Bomberman(self.bomberman.rect.x, self.bomberman.rect.y + self.bomberman.speed)):
                     self.bomberman.can_move_Down = False
-                elif objects.rect.colliderect(
+                if objects.rect.colliderect(
                         Bomberman(self.bomberman.rect.x, self.bomberman.rect.y - self.bomberman.speed)):
                     self.bomberman.can_move_Up = False
-
         for i in range(len(self.area.objects)):
             for fire in self.fires:
                 if self.area.objects[i].type == 'Brick' and self.area.objects[i].rect.colliderect(fire):
