@@ -71,13 +71,6 @@ class Game:
                     self.bombs.append(Bomb(self.bomb.bomb_x_in_area * 50, self.bomb.bomb_y_in_area * 50 + 75))
                     if len(self.bombs) == self.bomberman.max_count_bombs:
                         self.bomb.is_bomb = True
-                elif event.key == 101 and not self.is_bomb:  # Обработка нажатия клавиши E (для взрыва)
-                    self.bomb_x_in_area = int((self.bomberman.rect.x - (
-                                self.bomberman.rect.x % 50)) // 50)  # Координата x бомбы относительно блоков
-                    self.bomb_y_in_area = int((self.bomberman.rect.y - 75 - (
-                                (self.bomberman.rect.y - 75) % 50)) // 50)  # Координата y бомбы относительно блоков
-                    self.bombs.append(Bomb(self.bomb_x_in_area * 50, self.bomb_y_in_area * 50 + 75))
-                    self.is_bomb = True
                 self.bomberman.shift_x = self.bomberman.shift_x_left + self.bomberman.shift_x_right
                 self.bomberman.shift_y = self.bomberman.shift_y_up + self.bomberman.shift_y_down
             if event.type == pygame.KEYUP:
@@ -137,12 +130,6 @@ class Game:
         self.area.process_draw(self.screen, self.camera)
         # Score
         self.player.refresh_area(self.screen)
-        # Add score: self.player.add_score(<how_much_score>)
-        # Add time:  self.player.add_time(<how_much_time>)
-        # Add life:  self.player.add_life(<how_much_time>)
-        # Bomb
-        for bombs in self.bombs:
-            self.screen.blit(bombs.image, self.camera.apply(bombs))
         self.process_draw_bomb()
         self.process_draw_fires()
         self.bomberman.process_draw(self.screen, self.camera)
@@ -244,11 +231,6 @@ class Game:
             self.process_move()
             self.process_draw()
             self.bomberman.process_draw(self.screen, self.camera)
-            if self.is_bomb:
-                for i in range(len(self.bombs)):
-                    if self.bombs[i].try_blow():
-                        del self.bombs[i]
-                        self.is_bomb = False
             self.process_logic_bombs()
             self.process_logic_fires()
 
