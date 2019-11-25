@@ -25,6 +25,10 @@ class Game:
         self.bomb_y_in_area = 0
         self.game_over = False
         self.is_bomb = False
+        self.is_pressed_up = False
+        self.is_pressed_left = False
+        self.is_pressed_down = False
+        self.is_pressed_right = False
         self.screen = pygame.display.set_mode(self.size)
         pygame.init()
         self.bombs = []
@@ -37,13 +41,17 @@ class Game:
                 self.game_over = True
             if event.type == pygame.KEYDOWN:
                 if event.key == 97 or event.key == 276 or event.key == 160:
-                    self.bomberman.shift_x = -self.bomberman.speed
+                    self.is_pressed_left = True
+                    self.bomberman.shift_x_left = -self.bomberman.speed
                 elif event.key == 100 or event.key == 275 or event.key == 162:
-                    self.bomberman.shift_x = self.bomberman.speed
+                    self.is_pressed_right = True
+                    self.bomberman.shift_x_right = self.bomberman.speed
                 elif event.key == 115 or event.key == 274 or event.key == 161:
-                    self.bomberman.shift_y = self.bomberman.speed
+                    self.is_pressed_down = True
+                    self.bomberman.shift_y_down = self.bomberman.speed
                 elif event.key == 119 or event.key == 273 or event.key == 172:
-                    self.bomberman.shift_y = -self.bomberman.speed
+                    self.is_pressed_up = True
+                    self.bomberman.shift_y_up = -self.bomberman.speed
                 # Обработка нажатия клавиши E (для взрыва)
                 elif (event.key == 101 or event.key == 173) and not self.bomb.is_bomb:
                     self.bomb.bomb_larger_middle_x = self.bomb_place_x()
@@ -70,6 +78,8 @@ class Game:
                                 (self.bomberman.rect.y - 75) % 50)) // 50)  # Координата y бомбы относительно блоков
                     self.bombs.append(Bomb(self.bomb_x_in_area * 50, self.bomb_y_in_area * 50 + 75))
                     self.is_bomb = True
+                self.bomberman.shift_x = self.bomberman.shift_x_left + self.bomberman.shift_x_right
+                self.bomberman.shift_y = self.bomberman.shift_y_up + self.bomberman.shift_y_down
             if event.type == pygame.KEYUP:
                 if event.key == 97 or event.key == 276 or event.key == 160:
                     self.is_pressed_left = False
