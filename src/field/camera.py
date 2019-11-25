@@ -19,7 +19,7 @@ def camera_func(camera, target_rect):
     l, t = -l + 800 / 2, -t + 650 / 2
 
     l = min(0, l)  # Не движемся дальше левой границы
-    l = max(-(camera.width - 950), l)       # Не движемся дальше правой границы
-    t = max(-(camera.height-650), t)        # Не движемся дальше нижней границы
+    l = max(-(camera.width - 800), l)       # Не движемся дальше правой границы
+    t = max(-(camera.height - 650), t)        # Не движемся дальше нижней границы
     t = min(0, t)                           # Не движемся дальше верхней границы
     return Rect(l, t, w, h)
