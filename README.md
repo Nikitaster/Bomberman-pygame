@@ -10,3 +10,5 @@ Right - 'D'/'В'/'>'
 Left - 'A'/'Ф'/'<'
 Up - 'W'/'Ц'/'^'
 Down - 'S'/'Ы'/'v'
+
+Spawn bomb -> 'E'/'У'
