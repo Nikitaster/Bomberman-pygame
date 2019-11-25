@@ -1,7 +1,8 @@
+import time
 import pygame
 import pyganim
-import time
-from src.cell import Cell
+
+from src.blocks.cell import Cell
 
 
 class Bomb(Cell):
@@ -19,13 +20,13 @@ class Bomb(Cell):
         self.is_bomb = False
         self.bomb_larger_middle_x = False
         self.bomb_larger_middle_y = False
-        self.boltAnim = []
+        self.bombAnim = []
         for anim in self.animation_bomb:
-            self.boltAnim.append((anim, self.animation_delay))
-        self.boltAnimBomb = pyganim.PygAnimation(self.boltAnim)
+            self.bombAnim.append((anim, self.animation_delay))
+        self.boltAnimBomb = pyganim.PygAnimation(self.bombAnim)
         self.boltAnimBomb.play()
 
-    def process_draw(self, screen, camera):
+    def process_draw(self, screen, camera, x=0, y=75):
         screen.blit(self.image, camera.apply(self))
         self.boltAnimBomb.blit(self.image)
 

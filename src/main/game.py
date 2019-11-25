@@ -1,14 +1,11 @@
 import sys
 import pygame
 
-from src.area import Area
 from src.blocks.grass import Grass
-from src.bomberman import Bomberman
-from src.bomb import Bomb
-from src.fire import Fire, FireDown, FireHorizontal, FireLeft, FireMiddle, FireRight, FireUp, FireVertical
-from src.camera import Camera, camera_func
-from src.field.area import Area, Bomb
+from src.bomb.bomb import Bomb
+from src.bomb.fire import FireMiddle, FireHorizontal, FireVertical
 from src.charachters.bomberman import Bomberman
+from src.field.area import Area
 from src.field.camera import Camera, camera_func
 from src.field.score import Player_Score
 
@@ -25,13 +22,12 @@ class Game:
         self.bomb_x_in_area = 0
         self.bomb_y_in_area = 0
         self.game_over = False
+        self.is_bomb = False
         self.screen = pygame.display.set_mode(self.size)
         pygame.init()
         self.bombs = []
         self.fires = []
-        ####
-        self.player = Player_Score()  # This part must be here? Or it won't work... But you can try to make it different...
-        ####
+        self.player = Player_Score()
 
     def process_event(self):
         for event in pygame.event.get():
@@ -72,7 +68,6 @@ class Game:
                                 (self.bomberman.rect.y - 75) % 50)) // 50)  # Координата y бомбы относительно блоков
                     self.bombs.append(Bomb(self.bomb_x_in_area * 50, self.bomb_y_in_area * 50 + 75))
                     self.is_bomb = True
-
             if event.type == pygame.KEYUP:
                 self.bomberman.shift_x = 0
                 self.bomberman.shift_y = 0
@@ -84,7 +79,6 @@ class Game:
         self.bomberman.can_move_Down = True
         # Collisions
         all_objects = self.area.objects + self.bombs + self.fires  # Список всех объектов поля, для обработки коллизии
-        all_objects = self.area.objects + self.bombs  # Список всех объектов поля, для обработки коллизии
         for objects in all_objects:
             if objects.type == "Bomb" and objects.rect.colliderect(self.bomberman):
                 return
@@ -125,7 +119,7 @@ class Game:
         # Add life:  self.player.add_life(<how_much_time>)
         # Bomb
         for bombs in self.bombs:
-            self.screen.blit(bombs.image, self.camera.apply(bombs, self.bomberman.speed))
+            self.screen.blit(bombs.image, self.camera.apply(bombs))
         self.process_draw_bomb()
         self.process_draw_fires()
         self.bomberman.process_draw(self.screen, self.camera)
