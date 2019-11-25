@@ -5,24 +5,6 @@ import pygame
 from src.blocks.block import Block
 from src.blocks.brick import Brick
 from src.blocks.grass import Grass
-from src.blocks.cell import Cell
-
-
-class Bomb(Cell):
-
-    image = pygame.image.load("img/Bomb1.png")
-
-    def __init__(self, x=0, y=75):
-        super().__init__(x, y)
-        self.type = 'Bomb'
-        self.alive = 0 # Количество кадров, которое бомба существует
-
-    def try_blow(self):  # Попытка взрыва по счетчику кадров
-        if self.alive < 100:
-            self.alive += 1
-            return False  # Вернуть False, если счетчик времени не достиг значения взрыва
-        else:
-            return True  # Вернуть True, как только счетчик времени достиг значения взрыва
 
 
 class Area:
@@ -70,6 +52,7 @@ class Area:
         self.area_data[1][1] = 1
         self.area_data[1][2] = 1
         self.area_data[2][1] = 1
+
         # Fill area with all blocks
         for i in range(13):
             for j in range(31):
@@ -82,4 +65,4 @@ class Area:
 
     def process_draw(self, screen, camera, speed):
         for i in self.objects:
-            screen.blit(i.image, camera.apply(i, speed))
+            screen.blit(i.image, camera.apply(i))
