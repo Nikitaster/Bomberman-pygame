@@ -71,8 +71,20 @@ class Game:
                     self.bombs.append(Bomb(self.bomb_x_in_area * 50, self.bomb_y_in_area * 50 + 75))
                     self.is_bomb = True
             if event.type == pygame.KEYUP:
-                self.bomberman.shift_x = 0
-                self.bomberman.shift_y = 0
+                if event.key == 97 or event.key == 276 or event.key == 160:
+                    self.is_pressed_left = False
+                    self.bomberman.shift_x_left = 0
+                elif event.key == 100 or event.key == 275 or event.key == 162:
+                    self.is_pressed_right = False
+                    self.bomberman.shift_x_right = 0
+                elif event.key == 115 or event.key == 274 or event.key == 161:
+                    self.is_pressed_down = False
+                    self.bomberman.shift_y_down = 0
+                elif event.key == 119 or event.key == 273 or event.key == 172:
+                    self.is_pressed_up = False
+                    self.bomberman.shift_y_up = 0
+                self.bomberman.shift_x = self.bomberman.shift_x_left + self.bomberman.shift_x_right
+                self.bomberman.shift_y = self.bomberman.shift_y_up + self.bomberman.shift_y_down
 
     def process_collisions(self):
         self.bomberman.can_move_Right = True
