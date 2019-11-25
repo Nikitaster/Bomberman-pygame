@@ -7,9 +7,9 @@ from src.blocks.cell import Cell
 
 class Bomb(Cell):
     animation_delay = 1000  # скорость смены кадров
-    animation_bomb = ['img/Bomb1.png',
-                      'img/Bomb2.png',
-                      'img/Bomb3.png']
+    animation_bomb = ['img/bomb/Bomb_start.png',
+                      'img/bomb/Bomb_mid.png',
+                      'img/bomb/Bomb_preblow.png']
     image = pygame.image.load(animation_bomb[0])
 
     def __init__(self, x=0, y=75):

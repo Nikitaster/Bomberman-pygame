@@ -113,7 +113,7 @@ class Game:
     def process_draw(self):
         self.screen.fill((75, 100, 150))
         self.camera.update(self.bomberman)
-        self.area.process_draw(self.screen, self.camera, self.bomberman.speed)
+        self.area.process_draw(self.screen, self.camera)
         # Score
         self.player.refresh_area(self.screen)
         # Add score: self.player.add_score(<how_much_score>)
