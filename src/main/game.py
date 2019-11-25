@@ -230,7 +230,6 @@ class Game:
             self.process_collisions()
             self.process_move()
             self.process_draw()
-            self.bomberman.process_draw(self.screen, self.camera)
             self.process_logic_bombs()
             self.process_logic_fires()
 
