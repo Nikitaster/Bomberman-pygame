@@ -71,3 +71,6 @@ class Area:
     def process_draw(self, screen, camera):
         for i in self.objects:
             screen.blit(i.image, camera.apply(i))
+
+if __name__ == '__main__':
+    __init__()
