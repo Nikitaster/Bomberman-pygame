@@ -28,7 +28,12 @@ class Bomberman(Cell):
         screen.blit(self.image, camera.apply(self))
 
     def process_logic(self, height):
-        pass
+        if self.rect.x + self.shift_x < 50:
+            self.shift_x_left = 0
+        if self.rect.y + self.shift_y < 125:
+            self.shift_y_up = 0
+        if self.rect.y + self.shift_y > height - 25:
+            self.shift_y_down = 0
 
     def move(self):
         if self.shift_x > 0 and self.can_move_Right:
