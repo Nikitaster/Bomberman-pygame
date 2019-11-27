@@ -159,7 +159,6 @@ class Game:
         if self.bomberman.rect.x <= int((self.bomberman.rect.x - (
                 self.bomberman.rect.x % 50)) // 50) * 50 + 25:
             return True
-
         if self.bomberman.rect.x > int((self.bomberman.rect.x - (
                 self.bomberman.rect.x % 50)) // 50) * 50 + 25:
             return False
@@ -168,7 +167,6 @@ class Game:
         if self.bomberman.rect.y < int(((self.bomberman.rect.y - 75 - (
                 (self.bomberman.rect.y - 75) % 50)) // 50) * 50 + 75) + 25:
             return True
-
         if self.bomberman.rect.y >= int(((self.bomberman.rect.y - 75 - (
                 (self.bomberman.rect.y - 75) % 50)) // 50) * 50 + 75) + 25:
             return False
@@ -177,39 +175,45 @@ class Game:
         if len(self.fires) == 0:
             self.fires.append(FireMiddle(x, y))
         can_generate = True
+        self.check_fire_horizontal_right(x, y, FireHorizontal, can_generate)
+        self.check_fire_vertical_up(x, y, FireVertical, can_generate)
+        self.check_fire_horizontal_left(x, y, FireHorizontal, can_generate)
+        self.check_fire_vertical_down(x, y, FireVertical, can_generate)
+
+    def check_fire_horizontal_right(self, x, y, types, can_generate):
         for i in range(self.bomberman.long_fire):
             if can_generate:
-                self.fires.append(FireHorizontal(x + 50 * i, y))
+                self.fires.append(types(x + 50 * i, y))
                 can_generate = self.check_fire_gen()
                 if not can_generate:
                     self.fires.pop()
                     self.fires.pop()
-                    self.fires.append(FireHorizontal(x, y + 50 * (i - 1)))
+                    self.fires.append(types(x, y + 50 * (i - 1)))
 
-        can_generate = True
+    def check_fire_vertical_up(self, x, y, types, can_generate):
         for i in range(self.bomberman.long_fire):
             if can_generate:
-                self.fires.append(FireVertical(x, y + 50 * i))
+                self.fires.append(types(x, y + 50 * i))
                 can_generate = self.check_fire_gen()
                 if not can_generate:
                     self.fires.pop()
                     self.fires.pop()
                     self.fires.append(FireVertical(x, y + 50 * (i - 1)))
 
-        can_generate = True
+    def check_fire_horizontal_left(self, x, y, types, can_generate):
         for i in range(self.bomberman.long_fire):
             if can_generate:
-                self.fires.append(FireHorizontal(x - 50 * i, y))
+                self.fires.append(types(x - 50 * i, y))
                 can_generate = self.check_fire_gen()
                 if not can_generate:
                     self.fires.pop()
                     self.fires.pop()
                     self.fires.append(FireHorizontal(x - 50 * (i - 1), y))
 
-        can_generate = True
+    def check_fire_vertical_down(self, x, y, types, can_generate):
         for i in range(self.bomberman.long_fire):
             if can_generate:
-                self.fires.append(FireVertical(x, y - 50 * i))
+                self.fires.append(types(x, y - 50 * i))
                 can_generate = self.check_fire_gen()
                 if not can_generate:
                     self.fires.pop()
