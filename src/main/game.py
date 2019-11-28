@@ -11,6 +11,29 @@ from src.field.area import Area
 from src.field.camera import Camera, camera_func
 from src.field.score import Player_Score
 
+from src.blocks.cell import Cell
+from random import randint
+
+import time
+
+
+class Exit(Cell):
+    image = pygame.image.load("img/blocks/exit.jpg")
+
+    def __init__(self, x=0, y=75):
+        super().__init__(x, y)
+        self.type = "Exit"
+        self.status = 'Hidden'
+        self.time_of_open = None
+
+    def set_open_status(self):
+        if self.status == 'Hidden':
+            self.time_of_open = time.time()
+
+    def process_logic(self):
+        if time.time() - self.time_of_open > 3 and self.status == 'Hidden' and self.time_of_open is not None:
+            self.status = 'Open'
+
 
 class Game:
     def __init__(self, width=800, height=625):
@@ -23,6 +46,7 @@ class Game:
         self.size = (width, height)
         self.bomb_x_in_area = 0
         self.bomb_y_in_area = 0
+        self.exit_num = None
         self.game_over = False
         self.is_bomb = False
         self.is_pressed_up = False
@@ -34,6 +58,7 @@ class Game:
         self.bombs = []
         self.fires = []
         self.player = Player_Score()
+        self.generate_exit_num()
 
     def process_event(self):
         for event in pygame.event.get():
@@ -103,7 +128,11 @@ class Game:
                 print("Game Over")
                 self.game_over = True
                 return
-            if objects.type != 'Grass' and objects.type != 'Fire':
+            if objects.type == "Exit" and objects.rect.colliderect(self.bomberman):
+                print("YOU WON!!!")
+                self.game_over = True
+                return
+            if objects.type != 'Grass' and objects.type != 'Fire' and objects.type != 'Exit':
                 if objects.rect.colliderect(
                         Bomberman(self.bomberman.rect.x + self.bomberman.speed, self.bomberman.rect.y)):
                     self.bomberman.can_move_Right = False
@@ -116,10 +145,24 @@ class Game:
                 if objects.rect.colliderect(
                         Bomberman(self.bomberman.rect.x, self.bomberman.rect.y - self.bomberman.speed)):
                     self.bomberman.can_move_Up = False
+
         for i in range(len(self.area.objects)):
             for fire in self.fires:
+                if self.area.objects[i].type == 'Brick' and (i == self.exit_num) and \
+                        self.area.objects[i].rect.colliderect(fire):
+                    self.area.objects[i] = Exit(fire.rect.x, fire.rect.y)
+                    self.area.objects[i].set_open_status()
                 if self.area.objects[i].type == 'Brick' and self.area.objects[i].rect.colliderect(fire):
                     self.area.objects[i] = Grass(fire.rect.x, fire.rect.y)
+                if self.area.objects[i].type == 'Exit' and self.area.objects[i].status == 'Open':
+                    self.game_over = True
+                    print("Game Over")
+
+    def generate_exit_num(self):
+        rnd = randint(34, 372)
+        while self.area.objects[rnd].type != 'Brick':
+            rnd = randint(34, 372)
+        self.exit_num = rnd
 
     def process_move(self):
         self.bomberman.move()
@@ -236,6 +279,8 @@ class Game:
             self.process_draw()
             self.process_logic_bombs()
             self.process_logic_fires()
+            if self.area.objects[self.exit_num].type == 'Exit':
+                self.area.objects[self.exit_num].process_logic()
 
             pygame.display.flip()
             pygame.time.wait(10)
