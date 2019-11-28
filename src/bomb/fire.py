@@ -1,5 +1,4 @@
 import time
-import pygame
 
 from src.blocks.cell import Cell
 
@@ -16,7 +15,4 @@ class Fire(Cell):
         screen.blit(self.image, camera.apply(self))
 
     def try_blow(self):  # Попытка взрыва по счетчику кадров
-        if (time.time() - self.start_time) <= self.end_time - time.time():
-            return False  # Вернуть False, если счетчик времени не достиг значения взрыва
-        else:
-            return True  # Вернуть True, как только счетчик времени достиг значения взрыва
+        return False if (time.time() - self.start_time) <= self.end_time - time.time() else True

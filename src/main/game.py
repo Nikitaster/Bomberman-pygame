@@ -1,6 +1,8 @@
 import sys
 import pygame
+from random import randint
 
+from src.blocks.exit import Exit
 from src.blocks.grass import Grass
 from src.bomb.bomb import Bomb
 from src.bomb.fires.firehoriz import FireHorizontal
@@ -10,14 +12,6 @@ from src.charachters.bomberman import Bomberman
 from src.field.area import Area
 from src.field.camera import Camera, camera_func
 from src.field.score import Player_Score
-
-from src.blocks.cell import Cell
-from random import randint
-
-import time
-
-
-
 
 
 class Game:
@@ -252,7 +246,6 @@ class Game:
         for i in self.fires:
             for obj in self.area.objects:
                 if obj.type == 'Block' and obj.rect.colliderect(i):
-                    print("COLLIDE")
                     return False
         return True
 
@@ -266,7 +259,6 @@ class Game:
             self.process_logic_fires()
             if self.area.objects[self.exit_num].type == 'Exit':
                 self.area.objects[self.exit_num].process_logic()
-
             pygame.display.flip()
             pygame.time.wait(10)
         sys.exit()
