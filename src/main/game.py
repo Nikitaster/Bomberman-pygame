@@ -220,7 +220,7 @@ class Game:
                 if not can_generate:
                     self.fires.pop()
                     self.fires.pop()
-                    self.fires.append(FireVertical(x, y + 50 * (i - 1)))
+                    self.fires.append(types(x, y + 50 * (i - 1)))
 
     def check_fire_horizontal_left(self, x, y, types, can_generate):
         for i in range(self.bomberman.long_fire):
@@ -230,7 +230,7 @@ class Game:
                 if not can_generate:
                     self.fires.pop()
                     self.fires.pop()
-                    self.fires.append(FireHorizontal(x - 50 * (i - 1), y))
+                    self.fires.append(types(x - 50 * (i - 1), y))
 
     def check_fire_vertical_down(self, x, y, types, can_generate):
         for i in range(self.bomberman.long_fire):
@@ -240,7 +240,7 @@ class Game:
                 if not can_generate:
                     self.fires.pop()
                     self.fires.pop()
-                    self.fires.append(FireVertical(x, y - 50 * (i - 1)))
+                    self.fires.append(types(x, y - 50 * (i - 1)))
 
     def check_fire_gen(self):
         for i in self.fires:
