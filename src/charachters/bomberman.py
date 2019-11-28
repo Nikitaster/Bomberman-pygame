@@ -23,7 +23,7 @@ class Bomberman(Cell):
     animation_bomberman_right_a = ['./img/bomberman/run/Runs_right.png',
                                    './img/bomberman/run/Runs_right1.png']
 
-    image = pygame.image.load(animation_bomberman_up_s[0])
+    image = pygame.image.load(animation_bomberman_down_s[0])
 
     def __init__(self, x=50, y=125):
         super().__init__(x, y)
@@ -44,7 +44,7 @@ class Bomberman(Cell):
         # for animation
         self.start_anim_time = None
         self.num_sprite = 0
-        self.last_moving_down = False
+        self.last_moving_down = True
 
     def prepare_for_anim(self):
         if self.start_anim_time is None:
