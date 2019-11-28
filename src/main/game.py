@@ -263,6 +263,7 @@ class Game:
             self.process_logic_fires()
             if self.area.objects[self.exit_num].type == 'Exit':
                 self.area.objects[self.exit_num].process_logic()
+            self.bomberman.process_logic()
             pygame.display.flip()
             pygame.time.wait(10)
         sys.exit()

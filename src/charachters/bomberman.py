@@ -7,7 +7,7 @@ from src.blocks.cell import Cell
 class Bomberman(Cell):
     animation_gap = 2
     animation_bomberman_down_s = ['./img/bomberman/stand/Front.png',
-                                  './img/bomberman/stand/Fron1.png']
+                                  './img/bomberman/stand/Front1.png']
     animation_bomberman_down_a = ['./img/bomberman/run/Runs_down.png',
                                   './img/bomberman/run/Runs_down1.png']
 
@@ -44,10 +44,12 @@ class Bomberman(Cell):
         # for animation
         self.start_anim_time = None
         self.num_sprite = 0
+        self.last_moving_down = False
 
 
     def animation_right(self, flag):
         if flag:
+            self.last_moving_down = False
             if self.start_anim_time is None:
                 self.start_anim_time = time.time()
                 self.num_sprite = 0
@@ -63,6 +65,7 @@ class Bomberman(Cell):
 
     def animation_left(self, flag):
         if flag:
+            self.last_moving_down = False
             if self.start_anim_time is None:
                 self.start_anim_time = time.time()
                 self.num_sprite = 0
@@ -79,6 +82,7 @@ class Bomberman(Cell):
 
     def animation_up(self, flag):
         if flag:
+            self.last_moving_down = False
             if self.start_anim_time is None:
                 self.start_anim_time = time.time()
                 self.num_sprite = 0
@@ -95,6 +99,7 @@ class Bomberman(Cell):
 
     def animation_down(self, flag):
         if flag:
+            self.last_moving_down = False
             if self.start_anim_time is None:
                 self.start_anim_time = time.time()
                 self.num_sprite = 0
@@ -107,13 +112,24 @@ class Bomberman(Cell):
             self.image = pygame.image.load(self.animation_bomberman_down_s[0])
             self.start_anim_time = None
             self.num_sprite = 0
+            self.last_moving_down = True
 
+    def dancing(self):
+        if self.start_anim_time is None:
+            self.start_anim_time = time.time()
+            self.num_sprite = 0
+        elif self.start_anim_time is not None:
+            if time.time() - self.start_anim_time > 0.3:
+                self.start_anim_time = time.time()
+                self.num_sprite = (self.num_sprite + 1) % 2
+        self.image = pygame.image.load(self.animation_bomberman_down_s[self.num_sprite])
 
     def process_draw(self, screen, camera, x=0, y=75):
         screen.blit(self.image, camera.apply(self))
 
-    def process_logic(self, height):
-        pass
+    def process_logic(self):
+        if self.last_moving_down:
+            self.dancing()
 
     def move(self):
         if self.shift_x > 0 and self.can_move_Right:
