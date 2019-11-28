@@ -47,7 +47,7 @@ class Game:
                 elif event.key == 100 or event.key == 275 or event.key == 162:
                     self.is_pressed_right = True
                     self.bomberman.shift_x_right = self.bomberman.speed
-                    self.bomberman.animation_right(self.is_pressed_right)
+                    # self.bomberman.animation_right(self.is_pressed_right)
                 elif event.key == 115 or event.key == 274 or event.key == 161:
                     self.is_pressed_down = True
                     self.bomberman.shift_y_down = self.bomberman.speed
