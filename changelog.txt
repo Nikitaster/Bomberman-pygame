@@ -1,0 +1,55 @@
+VERSION 1.3
+
+
+New features:
+Add exit in level
+Make animation of movement
+Improve movement, make it more comfitable
+Fix minor bugs, like wrong collision with block
+Refactor all classes in code into their own files in src folder
+Slice amount of files in theme folders to ease find files
+Rewrite all imports and names of variables
+Add some comments
+
+Special thanks for:
+Nikita Gudkov(Main coder)
+Ivan Safonov(Make drawing of bomb and improve movement)
+Damir Fedotov(Add animation)
+Serezha Gordeev(Make an exit in game)
+Andrey Mukhin(Make bomb animation)
+Andrew Tkachev(Refactor code)
+
+
+
+VERSION 1.2
+
+
+New features:
+Add score, lifes and timer on the top of the screen
+Add bomb spawn and fire + remove blocks, that's strike by fire
+Make collision of bomberman and bomb(+ die, when touck fire)
+Fix camera movement and speed of the bomberman
+Start refactor code into their folders
+
+Special thanks for:
+Nikita Gudkov(Main coder)
+Ivan Safonov(Make movement)
+Damir Fedotov(Make sprites)
+Vladislav Kharchenko(Make table of score, etc)
+Andrey Mukhin(Make a logic of bomb)
+Andrew Tkachev(Refactor code)
+
+
+
+VERSION 1.1
+
+New features:
+Add simple area generation
+Add simple character movement
+Basic logic and collision
+
+Special thanks for:
+Nikita Gudkov(Main coder)
+Ivan Safonov(Help realise collisions)
+Damir Fedotov(Help with character basic sprite)
+Andrew Tkachev(Fina all blocks sprites)
