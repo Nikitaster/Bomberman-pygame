@@ -11,6 +11,32 @@ from src.field.area import Area
 from src.field.camera import Camera, camera_func
 from src.field.score import Player_Score
 
+# class Sound_left:
+#     file = 'sounds/in_field/right-left.ogg'
+#
+#     def __init__(self, play):
+#         self.play = play
+#
+#     def stop_sound(self, stop):
+#         self.play = stop
+#         if self.play:
+#             pygame.mixer.Sound('sounds/in_field/right-left.ogg').play()
+#     # def __init__(self, bomberman_x):
+#     #     pygame.mixer.Sound('sounds/in_field/right-left.ogg').play()
+#     #     self.bm_pr_x = bomberman_x
+#     #     self.bm_now_x = bomberman_x
+#     #     self.should_play = True
+#     #
+#     # def try_to_play(self, bomberman_x):
+#     #     self.bm_now_x = bomberman_x
+#     #     if self.bm_pr_x - self.bm_now_x <= 0:
+#     #         self.should_play = False
+#     #     else:
+#     #         self.should_play = True
+#     #     if self.should_play:
+#     #         pygame.mixer.Sound('sounds/in_field/right-left.ogg').play()
+#     #     self.bm_pr_x = self.bm_now_x
+
 
 class Game:
     def __init__(self, width=800, height=625):
@@ -34,6 +60,7 @@ class Game:
         self.bombs = []
         self.fires = []
         self.player = Player_Score()
+    #   self.sound_l = Sound_left(False)
 
     def process_event(self):
         for event in pygame.event.get():
@@ -42,6 +69,7 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 if event.key == 97 or event.key == 276 or event.key == 160:
                     self.is_pressed_left = True
+                    # self.sound_l.stop_sound(self.is_pressed_left)
                     self.bomberman.shift_x_left = -self.bomberman.speed
                 elif event.key == 100 or event.key == 275 or event.key == 162:
                     self.is_pressed_right = True
@@ -225,8 +253,14 @@ class Game:
         return True
 
     def main_loop(self):
+        # file = 'sounds/main_theme.ogg'
+        # pygame.mixer.init()
+        # pygame.mixer.music.load(file)
+        # pygame.mixer.music.set_volume(0.25)
+        # pygame.mixer.music.play(-1)
         while not self.game_over:
             self.process_event()
+            # self.sound_l.stop_sound(self.is_pressed_left)
             self.process_collisions()
             self.process_move()
             self.process_draw()
