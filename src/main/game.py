@@ -3,7 +3,6 @@ import pygame
 from random import randint
 
 from src.blocks.exit import Exit
-from fail import Fail
 from src.blocks.grass import Grass
 from src.bomb.bomb import Bomb
 from src.bomb.fires.firehoriz import FireHorizontal
@@ -43,7 +42,6 @@ class Game:
     def process_event(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == 27):
-                # self.game_over = True
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == 97 or event.key == 276 or event.key == 160:
@@ -110,7 +108,6 @@ class Game:
             if objects.type == "Bomb" and objects.rect.colliderect(self.bomberman):
                 return
             if objects.type == "Fire" and objects.rect.colliderect(self.bomberman):
-                print("Game Over")
                 self.game_over = True
                 return
             if objects.type == "Exit" and objects.rect.colliderect(self.bomberman):
@@ -130,7 +127,6 @@ class Game:
                 if objects.rect.colliderect(
                         Bomberman(self.bomberman.rect.x, self.bomberman.rect.y - self.bomberman.speed)):
                     self.bomberman.can_move_Up = False
-
         for i in range(len(self.area.objects)):
             for fire in self.fires:
                 if self.area.objects[i].type == 'Brick' and (i == self.exit_num) and \
@@ -141,7 +137,6 @@ class Game:
                     self.area.objects[i] = Grass(fire.rect.x, fire.rect.y)
                 if self.area.objects[i].type == 'Exit' and self.area.objects[i].status == 'Open':
                     self.game_over = True
-                    print("Game Over")
 
     def generate_exit_num(self):
         rnd = randint(34, 372)
@@ -278,6 +273,4 @@ class Game:
             self.bomberman.process_logic()
             pygame.display.flip()
             pygame.time.wait(10)
-
         self.player.update()
-

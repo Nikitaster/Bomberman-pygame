@@ -17,8 +17,7 @@ class Area:
         self.rgb = [
             (150, 0, 0),
             (0, 150, 0),
-            (0, 0, 150)
-        ]
+            (0, 0, 150)]
         self.area_data = []
         self.objects = []
         self.create_logic_area()
