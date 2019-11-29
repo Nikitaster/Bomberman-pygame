@@ -85,7 +85,6 @@ class Bomberman(Cell):
             self.start_anim_time = None
             self.num_sprite = 0
 
-
     def animation_down(self, flag):
         if flag:
             self.last_moving_down = False
