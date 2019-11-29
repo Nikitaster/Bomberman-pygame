@@ -10,14 +10,14 @@ from src.charachters.bomberman import Bomberman
 from src.field.area import Area
 from src.field.camera import Camera, camera_func
 from src.field.score import Player_Score
-from enemy import Enemy
+from enemy import Enemy, FirstLevelEnemy
 
 
 class Game:
     def __init__(self, width=800, height=625):
         self.area = Area()
         self.bomberman = Bomberman()
-        self.enemy = Enemy()
+        self.enemy = FirstLevelEnemy()
         self.bomb = Bomb()
         self.camera = Camera(camera_func, self.area.width, self.area.height)
         self.width = width
@@ -140,7 +140,7 @@ class Game:
         self.enemy.process_draw(self.screen, self.camera)
 
     def process_draw_enemies(self):
-        for enemy in range(7):
+        for enemy in self.enemies:
             enemy.process_draw()
 
     def process_draw_fires(self):
@@ -241,6 +241,9 @@ class Game:
             self.process_draw()
             self.process_logic_bombs()
             self.process_logic_fires()
+
+            self.enemy.process_collision(self.area.objects)
+            self.enemy.process_logic()
 
             pygame.display.flip()
             pygame.time.wait(10)
