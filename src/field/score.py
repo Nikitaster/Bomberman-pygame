@@ -3,14 +3,15 @@ import time
 
 
 class Player_Score:
-    def __init__(self, name='New player', score=0, time_left=200, lifes=3):
+    def __init__(self, name='New player', score=0, time_left=200, lifes=3, stage=1):
         self.name = name  # Player name
         self.score = score  # Player score
         self.start_time = time.time()
-        self.end_time = self.start_time + 200
         self.time_left = time_left  # How much time left
+        self.end_time = self.start_time + self.time_left
         self.lifes = lifes  # How much life left
         self.lost = False  # Have you lost?
+        self.stage = stage
         pygame.font.init()  # Start fonts
         self.scores_font = pygame.font.Font('./fonts/pixel.ttf', 30)  # Create a font
         self.text_name = self.scores_font.render('', 0, (255, 255, 255))  # declaration
@@ -49,3 +50,12 @@ class Player_Score:
             print("GameOver")
             return "{0:.0f}".format(0)
         return "{0:.0f}".format(now_time)
+
+    def time_reset(self):
+        self.start_time = time.time()
+        self.end_time = self.start_time + self.time_left
+
+    def update(self):
+        self.lifes -= 1
+        if self.lifes == 0:
+            self.lost = True
