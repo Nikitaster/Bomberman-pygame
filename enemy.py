@@ -7,49 +7,39 @@ import pygame
 class Enemy:
     filename = "img/enemy/first_enemy/enemy_move.png"
 
-    def __init__(self, x=100, y=125, width=1550, height=650):
+    def __init__(self, x=100, y=125):
         self.image = pygame.image.load(Enemy.filename)
         self.rect = self.image.get_rect()
-        # self.rect = pygame.Rect(x, y, 50, 50)
-        # self.rect.x = randrange(50, width-100, 50)
-        # self.rect.y = randrange(125, height-100, 50)
         self.rect.x = x
         self.rect.y = y
         self.speed = 5
-        # self.shift_x = self.speed if randint(0, 1) == 1 else -1
         self.shift_x = 5
         self.shift_y = 0
-        # self.shift_y = self.speed if randint(0, 1) == 1 else -1
         self.direction = None
-        self.choose_direction()
-
         self.can_move_Right = True
         self.can_move_Left = True
         self.can_move_Up = True
         self.can_move_Down = True
+        self.choose_direction()
 
     def choose_direction(self):
         i = randint(0, 3)
         if i == 0:
+            if not self.can_move_Left:
+                self.choose_direction()
             self.direction = 'Left'
-            self.can_move_Right = True
-            self.can_move_Up = True
-            self.can_move_Down = True
         if i == 1:
+            if not self.can_move_Up:
+                self.choose_direction()
             self.direction = 'Up'
-            self.can_move_Right = True
-            self.can_move_Left = True
-            self.can_move_Down = True
         if i == 2:
+            if not self.can_move_Right:
+                self.choose_direction()
             self.direction = 'Right'
-            self.can_move_Left = True
-            self.can_move_Up = True
-            self.can_move_Down = True
         if i == 3:
+            if not self.can_move_Down:
+                self.choose_direction()
             self.direction = 'Down'
-            self.can_move_Right = True
-            self.can_move_Up = True
-            self.can_move_Left = True
 
     def process_move(self):
         if self.direction == 'Right' and self.can_move_Right:
@@ -60,6 +50,14 @@ class Enemy:
             self.rect.move_ip(0, -self.speed)
         if self.direction == 'Down' and self.can_move_Down:
             self.rect.move_ip(0, self.speed)
+
+        self.can_move_Right = True
+        self.can_move_Left = True
+        self.can_move_Up = True
+        self.can_move_Down = True
+
+    def unexpected_move(self):
+        pass
 
     def process_logic(self):
         self.process_move()
@@ -92,5 +90,5 @@ class Enemy:
 
 
 class FirstLevelEnemy(Enemy):
-    def __init__(self, x=100, y=125, width=1550, height=650):
-        super().__init__(x, y, width, height)
+    def __init__(self, x=100, y=125):
+        super().__init__(x, y)
