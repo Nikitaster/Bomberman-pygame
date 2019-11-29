@@ -1,6 +1,5 @@
 import sys
 import pygame
-from random import randint
 import time
 from random import randint
 
@@ -138,7 +137,7 @@ class Game:
         self.bombs = []
         self.fires = []
         self.player = Player_Score()
-        self.generate_exit_num()
+        # self.generate_exit_num()
         self.sounds = dict(
             RightLeft=SoundRightLeft(),
             UpDown=SoundUpDown()
@@ -221,6 +220,7 @@ class Game:
             if objects.type == "Exit" and objects.rect.colliderect(self.bomberman):
                 print("YOU WON!!!")
                 self.game_over = True
+                self.player.stage += 1
                 return
             if objects.type != 'Grass' and objects.type != 'Fire' and objects.type != 'Exit':
                 if objects.rect.colliderect(
@@ -247,10 +247,12 @@ class Game:
                     self.game_over = True
 
     def generate_exit_num(self):
-        rnd = randint(34, 372)
+        rnd = randint(34, len(self.area.objects) - 31)
         while self.area.objects[rnd].type != 'Brick':
-            rnd = randint(34, 372)
+            rnd = randint(34, len(self.area.objects) - 31)
         self.exit_num = rnd
+        print(self.area.objects[rnd].rect.x, end=' ')
+        print(self.area.objects[rnd].rect.y)
 
     def process_move(self):
         self.bomberman.move()
@@ -366,6 +368,7 @@ class Game:
         self.fires.clear()
         self.bombs.clear()
         self.player.time_reset()
+        self.generate_exit_num()
 
     def play_sounds(self):
         if self.is_pressed_left or self.is_pressed_right:
