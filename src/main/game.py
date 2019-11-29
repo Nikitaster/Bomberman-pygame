@@ -1,6 +1,7 @@
 import sys
 import pygame
 
+from fail import Fail
 from src.blocks.grass import Grass
 from src.bomb.bomb import Bomb
 from src.bomb.fires.firehoriz import FireHorizontal
@@ -224,7 +225,17 @@ class Game:
                     return False
         return True
 
+    def reset(self):
+        self.area = Area()
+        self.game_over = False
+        self.bomberman.rect.x = 50
+        self.bomberman.rect.y = 125
+        self.fires.clear()
+        self.bombs.clear()
+        self.player.time_reset()
+
     def main_loop(self):
+        self.reset()
         while not self.game_over:
             self.process_event()
             self.process_collisions()
@@ -235,4 +246,6 @@ class Game:
 
             pygame.display.flip()
             pygame.time.wait(10)
-        sys.exit()
+
+        self.player.update()
+
