@@ -14,33 +14,6 @@ from src.field.camera import Camera, camera_func
 from src.field.score import Player_Score
 
 
-# class Sound_left:
-#     file = 'sounds/in_field/right-left.ogg'
-#
-#     def __init__(self, play):
-#         self.play = play
-#
-#     def stop_sound(self, stop):
-#         self.play = stop
-#         if self.play:
-#             pygame.mixer.Sound('sounds/in_field/right-left.ogg').play()
-#     # def __init__(self, bomberman_x):
-#     #     pygame.mixer.Sound('sounds/in_field/right-left.ogg').play()
-#     #     self.bm_pr_x = bomberman_x
-#     #     self.bm_now_x = bomberman_x
-#     #     self.should_play = True
-#     #
-#     # def try_to_play(self, bomberman_x):
-#     #     self.bm_now_x = bomberman_x
-#     #     if self.bm_pr_x - self.bm_now_x <= 0:
-#     #         self.should_play = False
-#     #     else:
-#     #         self.should_play = True
-#     #     if self.should_play:
-#     #         pygame.mixer.Sound('sounds/in_field/right-left.ogg').play()
-#     #     self.bm_pr_x = self.bm_now_x
-
-
 class Music:
     themes = ['./sounds/themes/theme_1.ogg',
               './sounds/themes/theme_2.ogg',
@@ -50,18 +23,19 @@ class Music:
               './sounds/themes/theme_6.ogg',
               './sounds/themes/theme_7.ogg',
               './sounds/themes/theme_8.ogg',
-              './sounds/themes/theme_9.ogg',
-              './sounds/themes/theme_10.ogg']
+              './sounds/themes/theme_9.ogg']
 
     def __init__(self):
         index = randint(0, len(self.themes) - 1)
         pygame.mixer.music.load(self.themes[index])
-        pygame.mixer.music.set_volume(0.1)
+        pygame.mixer.music.set_volume(0.18)
 
-    def play(self):
+    @staticmethod
+    def play():
         pygame.mixer.music.play(-1)
 
-    def stop(self):
+    @staticmethod
+    def stop():
         pygame.mixer.music.stop()
 
 
@@ -70,7 +44,7 @@ class Sound:
 
     def __init__(self):
         self.sound = pygame.mixer.Sound(self.sound_file)
-        self.sound.set_volume(0.1)
+        self.sound.set_volume(2)
         self.start_time = None
         self.len = 0.25
 
@@ -89,12 +63,51 @@ class Sound:
                 self.start_time = None
 
 
-class SoundMove(Sound):
+class SoundRightLeft(Sound):
     sound_file = './sounds/in_field/right-left.ogg'
 
     def __init__(self):
         super().__init__()
         self.len = 0.25
+
+
+class SoundUpDown(Sound):
+    sound_file = './sounds/in_field/up-down.ogg'
+
+    def __init__(self):
+        super().__init__()
+        self.len = 0.25
+
+
+class SoundSetBomb(Sound):
+    sound_file = './sounds/in_field/set_bomb.ogg'
+
+    def __init__(self):
+        super().__init__()
+        self.len = 5
+
+
+class SoundExplodeBomb(Sound):
+    sound_file = './sounds/in_field/explode_bomb.ogg'
+
+    def __init__(self):
+        super().__init__()
+        self.len = 4.1
+        self.is_played = False
+
+    def play(self):
+        if self.start_time is None:
+            self.start_time = time.time()
+
+    def process_logic(self):
+        if self.start_time is not None:
+            if time.time() - self.start_time > 2.2 and not (time.time() - self.start_time > self.len):
+                self.sound.play()
+                self.is_played = True
+            if time.time() - self.start_time > self.len:
+                self.stop()
+                self.is_played = False
+                self.start_time = None
 
 
 class Game:
@@ -122,10 +135,13 @@ class Game:
         self.bombs = []
         self.fires = []
         self.player = Player_Score()
-
-        self.sounds = [SoundMove()]
-
-    #   self.sound_l = Sound_left(False)
+        self.sounds = dict(
+            RightLeft=SoundRightLeft(),
+            UpDown=SoundUpDown()
+            # Относится к функционалу, который выдает ошибку
+            # SetBomb=SoundSetBomb(),
+            # ExplodeBomb=SoundExplodeBomb()
+        )
 
     def process_event(self):
         for event in pygame.event.get():
@@ -134,7 +150,6 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 if event.key == 97 or event.key == 276 or event.key == 160:
                     self.is_pressed_left = True
-                    # self.sound_l.stop_sound(self.is_pressed_left)
                     self.bomberman.shift_x_left = -self.bomberman.speed
                 elif event.key == 100 or event.key == 275 or event.key == 162:
                     self.is_pressed_right = True
@@ -319,33 +334,31 @@ class Game:
 
     def play_sounds(self):
         if self.is_pressed_left or self.is_pressed_right:
-            self.sounds[0].play()
+            self.sounds['RightLeft'].play()
+        if self.is_pressed_up or self.is_pressed_down:
+            self.sounds['UpDown'].play()
+        # Относится к функционалу, который выдает ошибку
+        # if self.bomb.is_bomb:
+        #     self.sounds['SetBomb'].play()
+        # if self.bomb.is_bomb:
+        #     self.sounds['ExplodeBomb'].play()
 
     def process_logic_sounds(self):
-        for sound in self.sounds:
-            sound.process_logic()
+        for sound in self.sounds.keys():
+            self.sounds[sound].process_logic()
 
     def main_loop(self):
         self.music.play()
         while not self.game_over:
             self.process_event()
-            # self.sound_l.stop_sound(self.is_pressed_left)
             self.process_collisions()
             self.process_move()
             self.process_draw()
             self.process_logic_bombs()
             self.process_logic_fires()
-
             self.play_sounds()
             self.process_logic_sounds()
 
             pygame.display.flip()
             pygame.time.wait(10)
         sys.exit()
-
-
-        # file = 'sounds/theme_6.ogg'
-        # pygame.mixer.init()
-        # pygame.mixer.music.load(file)
-        # pygame.mixer.music.set_volume(0.25)
-        # pygame.mixer.music.play(-1)
