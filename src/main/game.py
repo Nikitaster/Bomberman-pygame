@@ -10,12 +10,14 @@ from src.charachters.bomberman import Bomberman
 from src.field.area import Area
 from src.field.camera import Camera, camera_func
 from src.field.score import Player_Score
+from enemy import Enemy
 
 
 class Game:
     def __init__(self, width=800, height=625):
         self.area = Area()
         self.bomberman = Bomberman()
+        self.enemy = Enemy()
         self.bomb = Bomb()
         self.camera = Camera(camera_func, self.area.width, self.area.height)
         self.width = width
@@ -33,6 +35,7 @@ class Game:
         pygame.init()
         self.bombs = []
         self.fires = []
+        self.enemies = []
         self.player = Player_Score()
 
     def process_event(self):
@@ -116,6 +119,7 @@ class Game:
                 if objects.rect.colliderect(
                         Bomberman(self.bomberman.rect.x, self.bomberman.rect.y - self.bomberman.speed)):
                     self.bomberman.can_move_Up = False
+
         for i in range(len(self.area.objects)):
             for fire in self.fires:
                 if self.area.objects[i].type == 'Brick' and self.area.objects[i].rect.colliderect(fire):
@@ -133,6 +137,11 @@ class Game:
         self.process_draw_bomb()
         self.process_draw_fires()
         self.bomberman.process_draw(self.screen, self.camera)
+        self.enemy.process_draw(self.screen, self.camera)
+
+    def process_draw_enemies(self):
+        for enemy in range(7):
+            enemy.process_draw()
 
     def process_draw_fires(self):
         for fire in self.fires:
