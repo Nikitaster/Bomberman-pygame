@@ -1,5 +1,7 @@
 import sys
 import pygame
+import time
+from random import randint
 
 from src.blocks.grass import Grass
 from src.bomb.bomb import Bomb
@@ -10,6 +12,7 @@ from src.charachters.bomberman import Bomberman
 from src.field.area import Area
 from src.field.camera import Camera, camera_func
 from src.field.score import Player_Score
+
 
 # class Sound_left:
 #     file = 'sounds/in_field/right-left.ogg'
@@ -38,8 +41,66 @@ from src.field.score import Player_Score
 #     #     self.bm_pr_x = self.bm_now_x
 
 
+class Music:
+    themes = ['./sounds/themes/theme_1.ogg',
+              './sounds/themes/theme_2.ogg',
+              './sounds/themes/theme_3.ogg',
+              './sounds/themes/theme_4.ogg',
+              './sounds/themes/theme_5.ogg',
+              './sounds/themes/theme_6.ogg',
+              './sounds/themes/theme_7.ogg',
+              './sounds/themes/theme_8.ogg',
+              './sounds/themes/theme_9.ogg',
+              './sounds/themes/theme_10.ogg']
+
+    def __init__(self):
+        index = randint(0, len(self.themes) - 1)
+        pygame.mixer.music.load(self.themes[index])
+        pygame.mixer.music.set_volume(0.1)
+
+    def play(self):
+        pygame.mixer.music.play(-1)
+
+    def stop(self):
+        pygame.mixer.music.stop()
+
+
+class Sound:
+    sound_file = None
+
+    def __init__(self):
+        self.sound = pygame.mixer.Sound(self.sound_file)
+        self.sound.set_volume(0.1)
+        self.start_time = None
+        self.len = 0.25
+
+    def play(self):
+        if self.start_time is None:
+            self.sound.play()
+            self.start_time = time.time()
+
+    def stop(self):
+        self.sound.stop()
+
+    def process_logic(self):
+        if self.start_time is not None:
+            if time.time() - self.start_time > self.len:
+                self.stop()
+                self.start_time = None
+
+
+class SoundMove(Sound):
+    sound_file = './sounds/in_field/right-left.ogg'
+
+    def __init__(self):
+        super().__init__()
+        self.len = 0.25
+
+
 class Game:
     def __init__(self, width=800, height=625):
+        pygame.mixer.pre_init(44100, -16, 2, 64)
+        pygame.mixer.init()
         self.area = Area()
         self.bomberman = Bomberman()
         self.bomb = Bomb()
@@ -57,9 +118,13 @@ class Game:
         self.is_pressed_right = False
         self.screen = pygame.display.set_mode(self.size)
         pygame.init()
+        self.music = Music()
         self.bombs = []
         self.fires = []
         self.player = Player_Score()
+
+        self.sounds = [SoundMove()]
+
     #   self.sound_l = Sound_left(False)
 
     def process_event(self):
@@ -252,12 +317,16 @@ class Game:
                     return False
         return True
 
+    def play_sounds(self):
+        if self.is_pressed_left or self.is_pressed_right:
+            self.sounds[0].play()
+
+    def process_logic_sounds(self):
+        for sound in self.sounds:
+            sound.process_logic()
+
     def main_loop(self):
-        # file = 'sounds/main_theme.ogg'
-        # pygame.mixer.init()
-        # pygame.mixer.music.load(file)
-        # pygame.mixer.music.set_volume(0.25)
-        # pygame.mixer.music.play(-1)
+        self.music.play()
         while not self.game_over:
             self.process_event()
             # self.sound_l.stop_sound(self.is_pressed_left)
@@ -267,6 +336,16 @@ class Game:
             self.process_logic_bombs()
             self.process_logic_fires()
 
+            self.play_sounds()
+            self.process_logic_sounds()
+
             pygame.display.flip()
             pygame.time.wait(10)
         sys.exit()
+
+
+        # file = 'sounds/theme_6.ogg'
+        # pygame.mixer.init()
+        # pygame.mixer.music.load(file)
+        # pygame.mixer.music.set_volume(0.25)
+        # pygame.mixer.music.play(-1)
