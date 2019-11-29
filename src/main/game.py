@@ -1,6 +1,5 @@
 import sys
 import pygame
-import time
 from random import randint
 
 from src.blocks.exit import Exit
@@ -13,102 +12,9 @@ from src.charachters.bomberman import Bomberman
 from src.field.area import Area
 from src.field.camera import Camera, camera_func
 from src.field.score import Player_Score
-
-
-class Music:
-    themes = ['./sounds/themes/theme_1.ogg',
-              './sounds/themes/theme_2.ogg',
-              './sounds/themes/theme_3.ogg',
-              './sounds/themes/theme_4.ogg',
-              './sounds/themes/theme_5.ogg',
-              './sounds/themes/theme_6.ogg',
-              './sounds/themes/theme_7.ogg',
-              './sounds/themes/theme_8.ogg',
-              './sounds/themes/theme_9.ogg']
-
-    def __init__(self):
-        index = randint(0, len(self.themes) - 1)
-        pygame.mixer.music.load(self.themes[index])
-        pygame.mixer.music.set_volume(0.18)
-
-    @staticmethod
-    def play():
-        pygame.mixer.music.play(-1)
-
-    @staticmethod
-    def stop():
-        pygame.mixer.music.stop()
-
-
-class Sound:
-    sound_file = None
-
-    def __init__(self):
-        self.sound = pygame.mixer.Sound(self.sound_file)
-        self.sound.set_volume(2)
-        self.start_time = None
-        self.len = 0.25
-
-    def play(self):
-        if self.start_time is None:
-            self.sound.play()
-            self.start_time = time.time()
-
-    def stop(self):
-        self.sound.stop()
-
-    def process_logic(self):
-        if self.start_time is not None:
-            if time.time() - self.start_time > self.len:
-                self.stop()
-                self.start_time = None
-
-
-class SoundRightLeft(Sound):
-    sound_file = './sounds/in_field/right-left.ogg'
-
-    def __init__(self):
-        super().__init__()
-        self.len = 0.25
-
-
-class SoundUpDown(Sound):
-    sound_file = './sounds/in_field/up-down.ogg'
-
-    def __init__(self):
-        super().__init__()
-        self.len = 0.25
-
-
-class SoundSetBomb(Sound):
-    sound_file = './sounds/in_field/set_bomb.ogg'
-
-    def __init__(self):
-        super().__init__()
-        self.len = 5
-
-
-class SoundExplodeBomb(Sound):
-    sound_file = './sounds/in_field/explode_bomb.ogg'
-
-    def __init__(self):
-        super().__init__()
-        self.len = 4.1
-        self.is_played = False
-
-    def play(self):
-        if self.start_time is None:
-            self.start_time = time.time()
-
-    def process_logic(self):
-        if self.start_time is not None:
-            if time.time() - self.start_time > 2.2 and not (time.time() - self.start_time > self.len):
-                self.sound.play()
-                self.is_played = True
-            if time.time() - self.start_time > self.len:
-                self.stop()
-                self.is_played = False
-                self.start_time = None
+from src.music.main_theme import Music
+from src.music.sound_horizontal import SoundRightLeft
+from src.music.sound_vertical import SoundUpDown
 
 
 class Game:
@@ -137,13 +43,9 @@ class Game:
         self.bombs = []
         self.fires = []
         self.player = Player_Score()
-        # self.generate_exit_num()
         self.sounds = dict(
             RightLeft=SoundRightLeft(),
             UpDown=SoundUpDown()
-            # Относится к функционалу, который выдает ошибку
-            # SetBomb=SoundSetBomb(),
-            # ExplodeBomb=SoundExplodeBomb()
         )
 
     def process_event(self):
@@ -375,11 +277,6 @@ class Game:
             self.sounds['RightLeft'].play()
         if self.is_pressed_up or self.is_pressed_down:
             self.sounds['UpDown'].play()
-        # Относится к функционалу, который выдает ошибку
-        # if self.bomb.is_bomb:
-        #     self.sounds['SetBomb'].play()
-        # if self.bomb.is_bomb:
-        #     self.sounds['ExplodeBomb'].play()
 
     def process_logic_sounds(self):
         for sound in self.sounds.keys():
@@ -400,7 +297,6 @@ class Game:
             self.bomberman.process_logic()
             self.play_sounds()
             self.process_logic_sounds()
-
             pygame.display.flip()
             pygame.time.wait(10)
         self.player.update()

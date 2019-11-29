@@ -3,18 +3,23 @@ VERSION 1.3
 
 New features:
 Add exit in level
-Make animation of movement
-Improve movement, make it more comfitable
+Add screens of die and loose
+Make animation of bomberman and explode
+Add music
+Improve movement, make it more comfortable
 Fix minor bugs, like wrong collision with block
 Refactor all classes in code into their own files in src folder
 Slice amount of files in theme folders to ease find files
 Rewrite all imports and names of variables
+Fix all paths of files
 Add some comments
 
 Special thanks for:
 Nikita Gudkov(Main coder)
 Ivan Safonov(Make drawing of bomb and improve movement)
 Damir Fedotov(Add animation)
+Anna Bushe(Add music)
+Arina Strelnikova (Add die and loose screens)
 Serezha Gordeev(Make an exit in game)
 Andrey Mukhin(Make bomb animation)
 Andrew Tkachev(Refactor code)
