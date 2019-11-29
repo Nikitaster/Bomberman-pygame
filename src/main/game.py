@@ -38,8 +38,9 @@ class Game:
 
     def process_event(self):
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.game_over = True
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == 27):
+                # self.game_over = True
+                sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == 97 or event.key == 276 or event.key == 160:
                     self.is_pressed_left = True

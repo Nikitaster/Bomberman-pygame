@@ -36,17 +36,17 @@ class Fail:
 
     def process_event(self):
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == 27):
                 sys.exit()
-            if event.type == pygame.KEYDOWN:
+            if event.type == pygame.KEYDOWN and self.player_score.lost:
                 '''if event.key == 13:
                 Переход к главному меню'''
-                pass
+                sys.exit()
 
     def fail_loop(self):
         self.text_stage = self.text_font.render('STAGE {}'.format(self.player_score.stage), 0, (255, 255, 255))
         self.start_time = time.time()
-        while time.time() - self.start_time < 2:
+        while time.time() - self.start_time < 2 or self.player_score.lost:
             self.process_event()
             self.process_draw()
             pygame.display.flip()
