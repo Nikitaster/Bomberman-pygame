@@ -103,6 +103,15 @@ class Bomberman(Cell):
         if self.last_moving_down:
             self.dancing()
 
+    def stop(self):
+        self.shift_x = 0
+        self.shift_y = 0
+        self.can_move_Up = False
+        self.can_move_Left = False
+        self.can_move_Right = False
+        self.can_move_Down = False
+        self.last_moving_down = True
+
     def move(self):
         if self.shift_x > 0 and self.can_move_Right:
             self.rect.move_ip(self.shift_x, 0)

@@ -272,6 +272,13 @@ class Game:
         self.player.time_reset()
         self.generate_exit_num()
 
+        self.is_pressed_up = False
+        self.is_pressed_left = False
+        self.is_pressed_down = False
+        self.is_pressed_right = False
+
+        self.bomberman.stop()
+
     def play_sounds(self):
         if self.is_pressed_left or self.is_pressed_right:
             self.sounds['RightLeft'].play()
