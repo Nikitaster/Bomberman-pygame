@@ -6,16 +6,16 @@ import pygame
 
 class Enemy:
     filename = "img/enemy/first_enemy/enemy_move.png"
+    image = pygame.image.load(filename)
+    type = 'Enemy'
 
     def __init__(self, x=100, y=125):
-        self.image = pygame.image.load(Enemy.filename)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
         self.speed = 5
         self.shift_x = 5
         self.shift_y = 0
-        self.type = 'Enemy'
         self.direction = None
         self.can_move_Right = True
         self.can_move_Left = True

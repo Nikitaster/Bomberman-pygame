@@ -12,7 +12,7 @@ class Player_Score:
         self.time_left = time_left  # How much time left
         self.lifes = lifes  # How much life left
         self.lost = False  # Have you lost?
-        self.max_enemies = 1
+        self.max_enemies = randrange(3, 10)
         pygame.font.init()  # Start fonts
         self.scores_font = pygame.font.Font('./fonts/pixel.ttf', 30)  # Create a font
         self.text_name = self.scores_font.render('', 0, (255, 255, 255))  # declaration
