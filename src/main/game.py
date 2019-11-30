@@ -251,8 +251,18 @@ class Game:
 
             for object in self.area.objects:
                 if object.type == 'Brick' or object.type == 'Block':
+                    while self.enemies[i].rect.x == 50 and self.enemies[i].rect.y == 125 or \
+                        self.enemies[i].rect.x == 100 and self.enemies[i].rect.y == 125 or \
+                        self.enemies[i].rect.x == 50 and self.enemies[i].rect.y == 175:
+                        self.enemies[i].rect.x += 50
+                        self.enemies[i].rect.y += 50
+
                     while self.enemies[i].rect.colliderect(object):
-                        self.enemies[i] = FirstLevelEnemy(randrange(50, 1500, 50), randrange(125, 600, 50))
+                        self.enemies[i].rect.x += 50
+                        self.enemies[i].rect.y += 50
+                        self.enemies[i].rect.x %= self.area.width
+                        self.enemies[i].rect.y %= self.area.height
+
 
     def process_logic_enemies(self):
         for enemy in self.enemies:

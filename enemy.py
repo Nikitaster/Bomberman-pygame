@@ -1,4 +1,4 @@
-from random import randint, randrange
+from random import randint, randrange, choice
 
 import sys
 import pygame
@@ -21,26 +21,10 @@ class Enemy:
         self.can_move_Left = True
         self.can_move_Up = True
         self.can_move_Down = True
-        self.choose_direction()
+        self.choose_direction(['Up', 'Left', 'Right', 'Down'])
 
-    def choose_direction(self):
-        i = randint(0, 3)
-        if i == 0:
-            if not self.can_move_Left:
-                self.choose_direction()
-            self.direction = 'Left'
-        if i == 1:
-            if not self.can_move_Up:
-                self.choose_direction()
-            self.direction = 'Up'
-        if i == 2:
-            if not self.can_move_Right:
-                self.choose_direction()
-            self.direction = 'Right'
-        if i == 3:
-            if not self.can_move_Down:
-                self.choose_direction()
-            self.direction = 'Down'
+    def choose_direction(self, data_can_move):
+        self.direction = choice(data_can_move)
 
     def process_move(self):
         if self.direction == 'Right' and self.can_move_Right:
@@ -71,22 +55,22 @@ class Enemy:
             if self.direction == 'Right' and object.type != 'Grass' and object.type != 'Fire' and object.rect.colliderect(
                     Enemy(self.rect.x + self.speed, self.rect.y)):
                 self.can_move_Right = False
-                self.choose_direction()
+                self.choose_direction(['Left', 'Up', 'Down'])
                 print("Right", end=' ')
             elif self.direction == 'Left' and object.type != 'Grass' and object.type != 'Fire' and object.rect.colliderect(
                     Enemy(self.rect.x - self.speed, self.rect.y)):
+                self.choose_direction(['Right', 'Up', 'Down'])
                 self.can_move_Left = False
-                self.choose_direction()
                 print("Left", end=' ')
             elif self.direction == 'Down' and object.type != 'Grass' and object.type != 'Fire' and object.rect.colliderect(
                     Enemy(self.rect.x, self.rect.y + self.speed)):
+                self.choose_direction(['Left', 'Up', 'Right'])
                 self.can_move_Down = False
-                self.choose_direction()
                 print("Down", end=' ')
             elif self.direction == 'Up' and object.type != 'Grass' and object.type != 'Fire' and object.rect.colliderect(
                     Enemy(self.rect.x, self.rect.y - self.speed)):
                 self.can_move_Up = False
-                self.choose_direction()
+                self.choose_direction(['Left', 'Right', 'Down'])
                 print("Up", end=' ')
 
 
