@@ -7,13 +7,15 @@ class Sound:
 
     def __init__(self):
         self.sound = pygame.mixer.Sound(self.sound_file)
-        self.sound.set_volume(2)
+        self.sound.set_volume(0)
         self.start_time = None
         self.len = 0.25
 
     def play(self):
+
         if self.start_time is None:
             self.sound.play()
+            self.sound.set_volume(0.05)
             self.start_time = time.time()
 
     def stop(self):

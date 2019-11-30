@@ -19,7 +19,7 @@ from src.music.sound_vertical import SoundUpDown
 
 class Game:
     def __init__(self, width=800, height=625):
-        pygame.mixer.pre_init(44100, -16, 2, 64)
+        pygame.mixer.pre_init(22000, -16, 2, 64)
         pygame.mixer.init()
         self.area = Area()
         self.bomberman = Bomberman()
