@@ -27,6 +27,8 @@ class Enemy:
         self.direction = choice(data_can_move)
 
     def process_move(self):
+        if not self.can_move_Up and not self.can_move_Right and not self.can_move_Left and not self.can_move_Down:
+            return
         if self.direction == 'Right' and self.can_move_Right:
             self.rect.move_ip(self.speed, 0)
         if self.direction == 'Left' and self.can_move_Left:
@@ -36,10 +38,10 @@ class Enemy:
         if self.direction == 'Down' and self.can_move_Down:
             self.rect.move_ip(0, self.speed)
 
-        self.can_move_Right = True
-        self.can_move_Left = True
-        self.can_move_Up = True
-        self.can_move_Down = True
+        # self.can_move_Right = True
+        # self.can_move_Left = True
+        # self.can_move_Up = True
+        # self.can_move_Down = True
 
     def unexpected_move(self):
         pass
@@ -59,19 +61,20 @@ class Enemy:
                 print("Right", end=' ')
             elif self.direction == 'Left' and object.type != 'Grass' and object.type != 'Fire' and object.rect.colliderect(
                     Enemy(self.rect.x - self.speed, self.rect.y)):
-                self.choose_direction(['Right', 'Up', 'Down'])
                 self.can_move_Left = False
+                self.choose_direction(['Right', 'Up', 'Down'])
                 print("Left", end=' ')
             elif self.direction == 'Down' and object.type != 'Grass' and object.type != 'Fire' and object.rect.colliderect(
                     Enemy(self.rect.x, self.rect.y + self.speed)):
-                self.choose_direction(['Left', 'Up', 'Right'])
                 self.can_move_Down = False
+                self.choose_direction(['Left', 'Up', 'Right'])
                 print("Down", end=' ')
             elif self.direction == 'Up' and object.type != 'Grass' and object.type != 'Fire' and object.rect.colliderect(
                     Enemy(self.rect.x, self.rect.y - self.speed)):
                 self.can_move_Up = False
                 self.choose_direction(['Left', 'Right', 'Down'])
                 print("Up", end=' ')
+
 
 
 class FirstLevelEnemy(Enemy):
