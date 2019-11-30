@@ -38,10 +38,10 @@ class Enemy:
         if self.direction == 'Down' and self.can_move_Down:
             self.rect.move_ip(0, self.speed)
 
-        # self.can_move_Right = True
-        # self.can_move_Left = True
-        # self.can_move_Up = True
-        # self.can_move_Down = True
+        self.can_move_Right = True
+        self.can_move_Left = True
+        self.can_move_Up = True
+        self.can_move_Down = True
 
     def unexpected_move(self):
         pass
