@@ -12,12 +12,13 @@ from src.field.camera import Camera, camera_func
 from src.field.score import Player_Score
 from enemy import Enemy, FirstLevelEnemy
 
+from random import randrange
+
 
 class Game:
     def __init__(self, width=800, height=625):
         self.area = Area()
         self.bomberman = Bomberman()
-        self.enemy = FirstLevelEnemy()
         self.bomb = Bomb()
         self.camera = Camera(camera_func, self.area.width, self.area.height)
         self.width = width
@@ -37,6 +38,7 @@ class Game:
         self.fires = []
         self.enemies = []
         self.player = Player_Score()
+        self.generate_enemies()
 
     def process_event(self):
         for event in pygame.event.get():
@@ -98,12 +100,13 @@ class Game:
         self.bomberman.can_move_Up = True
         self.bomberman.can_move_Down = True
         # Collisions
-        all_objects = self.area.objects + self.bombs + self.fires  # Список всех объектов поля, для обработки коллизии
+        all_objects = self.area.objects + self.bombs + self.fires + self.enemies  # Список всех объектов поля, для обработки коллизии
         for objects in all_objects:
             if objects.type == "Bomb" and objects.rect.colliderect(self.bomberman):
                 return
-            if objects.type == "Fire" and objects.rect.colliderect(self.bomberman):
+            if (objects.type == "Fire" or objects.type == "Enemy") and objects.rect.colliderect(self.bomberman):
                 print("Game Over")
+                # реализовать анимацию смерти бомбермена
                 self.game_over = True
                 return
             if objects.type != 'Grass' and objects.type != 'Fire':
@@ -125,6 +128,16 @@ class Game:
                 if self.area.objects[i].type == 'Brick' and self.area.objects[i].rect.colliderect(fire):
                     self.area.objects[i] = Grass(fire.rect.x, fire.rect.y)
 
+        for enemy in range(len(self.enemies)):
+            for fire in self.fires:
+                if self.enemies[enemy].rect.colliderect(fire):
+                    print("DIED")
+                    # реализовать анимацию смерти врага
+                    self.enemies.pop(enemy)
+                    return
+
+
+
     def process_move(self):
         self.bomberman.move()
 
@@ -137,11 +150,10 @@ class Game:
         self.process_draw_bomb()
         self.process_draw_fires()
         self.bomberman.process_draw(self.screen, self.camera)
-        self.enemy.process_draw(self.screen, self.camera)
 
     def process_draw_enemies(self):
         for enemy in self.enemies:
-            enemy.process_draw()
+            enemy.process_draw(self.screen, self.camera)
 
     def process_draw_fires(self):
         for fire in self.fires:
@@ -233,6 +245,23 @@ class Game:
                     return False
         return True
 
+    def generate_enemies(self):
+        for i in range(self.player.max_enemies):
+            self.enemies.append(FirstLevelEnemy(randrange(50, 1500, 50), randrange(125, 600, 50)))
+
+            for object in self.area.objects:
+                if object.type == 'Brick' or object.type == 'Block':
+                    while self.enemies[i].rect.colliderect(object):
+                        self.enemies[i] = FirstLevelEnemy(randrange(50, 1500, 50), randrange(125, 600, 50))
+
+    def process_logic_enemies(self):
+        for enemy in self.enemies:
+            enemy.process_logic()
+
+    def process_collision_enemies(self):
+        for enemy in self.enemies:
+            enemy.process_collision(self.area.objects + self.fires)
+
     def main_loop(self):
         while not self.game_over:
             self.process_event()
@@ -242,8 +271,9 @@ class Game:
             self.process_logic_bombs()
             self.process_logic_fires()
 
-            self.enemy.process_collision(self.area.objects)
-            self.enemy.process_logic()
+            self.process_collision_enemies()
+            self.process_logic_enemies()
+            self.process_draw_enemies()
 
             pygame.display.flip()
             pygame.time.wait(10)

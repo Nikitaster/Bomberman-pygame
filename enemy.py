@@ -15,6 +15,7 @@ class Enemy:
         self.speed = 5
         self.shift_x = 5
         self.shift_y = 0
+        self.type = 'Enemy'
         self.direction = None
         self.can_move_Right = True
         self.can_move_Left = True
