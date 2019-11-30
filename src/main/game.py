@@ -138,6 +138,7 @@ class Game:
 
 
 
+
     def process_move(self):
         self.bomberman.move()
 
@@ -270,7 +271,7 @@ class Game:
 
     def process_collision_enemies(self):
         for enemy in self.enemies:
-            enemy.process_collision(self.area.objects + self.fires)
+            enemy.process_collision(self.area.objects + self.fires + self.bombs)
 
     def main_loop(self):
         while not self.game_over:
