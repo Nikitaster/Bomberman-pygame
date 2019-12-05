@@ -1,4 +1,6 @@
 import sys
+import time
+
 import pygame
 from random import randint
 
@@ -47,6 +49,7 @@ class Game:
             RightLeft=SoundRightLeft(),
             UpDown=SoundUpDown()
         )
+        self.time_start = None
 
     def process_event(self):
         for event in pygame.event.get():
@@ -293,6 +296,7 @@ class Game:
             self.sounds[sound].process_logic()
 
     def main_loop(self):
+
         self.reset()
         self.music.play()
         while not self.game_over:
@@ -310,3 +314,9 @@ class Game:
             pygame.display.flip()
             pygame.time.wait(10)
         self.player.update()
+        self.time_start = time.time()
+        while time.time() - self.time_start <3:
+            self.bomberman.death()
+            self.process_draw()
+            pygame.display.flip()
+            pygame.time.wait(10)

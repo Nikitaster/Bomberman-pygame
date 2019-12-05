@@ -19,6 +19,8 @@ class Bomberman(Cell):
     animation_bomberman_right_s = ['././img/bomberman/stand/Side_stoin1.png']
     animation_bomberman_right_a = ['././img/bomberman/run/Runs_right.png',
                                    '././img/bomberman/run/Runs_right1.png']
+    animation_bomberman_death = ['././img/bomberman/die/die_start.png',
+                                 '././img/bomberman/die/die_last.png']
     image = pygame.image.load(animation_bomberman_down_s[0])
 
     def __init__(self, x=50, y=125):
@@ -95,6 +97,18 @@ class Bomberman(Cell):
     def dancing(self):
         self.prepare_for_anim()
         self.image = pygame.image.load(self.animation_bomberman_down_s[self.num_sprite])
+
+    def death(self):
+        if self.start_anim_time is None:
+            self.start_anim_time = time.time()
+            self.num_sprite = 0
+        elif self.start_anim_time is not None:
+            if time.time() - self.start_anim_time > 1:
+                self.start_anim_time = time.time()
+                self.num_sprite += 1
+                if self.num_sprite > 1:
+                    self.num_sprite = 1
+        self.image = pygame.image.load(self.animation_bomberman_death[self.num_sprite])
 
     def process_draw(self, screen, camera, x=0, y=75):
         screen.blit(self.image, camera.apply(self))
