@@ -8,5 +8,4 @@ class Block(Cell):
 
     def __init__(self, x=0, y=75):
         super().__init__(x, y)
-        self.type = 'Bonus'
-        self.status = 'Hidden' # при открытии бонуса установить на 'Open'
+        self.type = 'Block'
