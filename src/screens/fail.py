@@ -16,7 +16,7 @@ class Fail:
         self.screen = pygame.display.set_mode(self.size)
         pygame.init()
         pygame.font.init
-        self.text_font = pygame.font.Font('.././fonts/pixel.ttf', 35)
+        self.text_font = pygame.font.Font('./fonts/pixel.ttf', 35)
         self.text_game_over = self.text_font.render('GAME OVER', 0, (255, 255, 255))
         self.token = ''.join(random.choice(string.ascii_uppercase) for x in range(20))
         self.text_token = self.text_font.render(self.token, 0, (255, 255, 255))

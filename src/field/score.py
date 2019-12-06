@@ -13,7 +13,7 @@ class Player_Score:
         self.lost = False  # Have you lost?
         self.stage = stage
         pygame.font.init()  # Start fonts
-        self.scores_font = pygame.font.Font('.././fonts/pixel.ttf', 30)  # Create a font
+        self.scores_font = pygame.font.Font('./fonts/pixel.ttf', 30)  # Create a font
         self.text_name = self.scores_font.render('', 0, (255, 255, 255))  # declaration
         self.text_time = self.scores_font.render('', 0, (255, 255, 255))  # declaration
         self.text_life = self.scores_font.render('', 0, (255, 255, 255))  # declaration

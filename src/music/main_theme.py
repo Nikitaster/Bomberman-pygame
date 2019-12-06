@@ -3,15 +3,15 @@ import pygame
 
 
 class Music:
-    themes = ['.././sounds/themes/theme_1.ogg',
-              '.././sounds/themes/theme_2.ogg',
-              '.././sounds/themes/theme_3.ogg',
-              '.././sounds/themes/theme_4.ogg',
-              '.././sounds/themes/theme_5.ogg',
-              '.././sounds/themes/theme_6.ogg',
-              '.././sounds/themes/theme_7.ogg',
-              '.././sounds/themes/theme_8.ogg',
-              '.././sounds/themes/theme_9.ogg']
+    themes = ['./sounds/themes/theme_1.ogg',
+              './sounds/themes/theme_2.ogg',
+              './sounds/themes/theme_3.ogg',
+              './sounds/themes/theme_4.ogg',
+              './sounds/themes/theme_5.ogg',
+              './sounds/themes/theme_6.ogg',
+              './sounds/themes/theme_7.ogg',
+              './sounds/themes/theme_8.ogg',
+              './sounds/themes/theme_9.ogg']
 
     def __init__(self):
         index = randint(0, len(self.themes) - 1)
