@@ -1,4 +1,5 @@
 import sys
+import time
 from random import randint
 from random import randrange
 
@@ -395,7 +396,7 @@ class Game:
             pygame.time.wait(10)
         self.player.update()
         self.time_start = time.time()
-        while time.time() - self.time_start <3:
+        while time.time() - self.time_start < 3:
             self.process_event()
             self.process_collisions()
             self.process_logic_bombs()
