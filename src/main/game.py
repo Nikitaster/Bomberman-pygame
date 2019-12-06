@@ -15,6 +15,9 @@ from src.field.score import Player_Score
 from src.music.main_theme import Music
 from src.music.sound_horizontal import SoundRightLeft
 from src.music.sound_vertical import SoundUpDown
+from enemy import Enemy, FirstLevelEnemy
+
+from random import randrange
 
 
 class Game:
@@ -42,7 +45,9 @@ class Game:
         self.music = Music()
         self.bombs = []
         self.fires = []
+        self.enemies = []
         self.player = Player_Score()
+        self.generate_enemies()
         self.sounds = dict(
             RightLeft=SoundRightLeft(),
             UpDown=SoundUpDown()
@@ -112,7 +117,7 @@ class Game:
         self.bomberman.can_move_Up = True
         self.bomberman.can_move_Down = True
         # Collisions
-        all_objects = self.area.objects + self.bombs + self.fires  # Список всех объектов поля, для обработки коллизии
+        all_objects = self.area.objects + self.bombs + self.fires + self.enemies  # Список всех объектов поля, для обработки коллизии
         for objects in all_objects:
             if objects.type == "Bomb" and objects.rect.colliderect(self.bomberman):
                 return
@@ -147,6 +152,14 @@ class Game:
                     self.area.objects[i] = Grass(fire.rect.x, fire.rect.y)
                 if self.area.objects[i].type == 'Exit' and self.area.objects[i].status == 'Open':
                     self.game_over = True
+        for enemy in range(len(self.enemies)):
+            for fire in self.fires:
+                if self.enemies[enemy].rect.colliderect(fire):
+                    print("DIED")
+                    # реализовать анимацию смерти врага
+                    self.enemies.pop(enemy)
+                    return
+
 
     def generate_exit_num(self):
         rnd = randint(34, len(self.area.objects) - 31)
@@ -168,6 +181,10 @@ class Game:
         self.process_draw_bomb()
         self.process_draw_fires()
         self.bomberman.process_draw(self.screen, self.camera)
+
+    def process_draw_enemies(self):
+        for enemy in self.enemies:
+            enemy.process_draw(self.screen, self.camera)
 
     def process_draw_fires(self):
         for fire in self.fires:
@@ -262,6 +279,34 @@ class Game:
                     return False
         return True
 
+    def generate_enemies(self):
+        for i in range(self.player.max_enemies):
+            self.enemies.append(FirstLevelEnemy(randrange(50, 1400, 50), randrange(125, 625, 50)))
+
+            while self.enemies[i].process_collision(self.area.objects):
+                self.enemies[i].rect.x = randrange(50, 1500, 50)
+                self.enemies[i].rect.y = randrange(125, 625, 50)
+
+            while self.enemies[i].rect.x == 50 and self.enemies[i].rect.y == 125 or \
+                    self.enemies[i].rect.x == 100 and self.enemies[i].rect.y == 125 or \
+                    self.enemies[i].rect.x == 50 and self.enemies[i].rect.y == 175:
+                self.enemies[i].rect.x += 50
+                self.enemies[i].rect.y += 50
+
+            #         while self.enemies[i].rect.colliderect(object):
+            #             self.enemies[i].rect.x += 50
+            #             self.enemies[i].rect.y += 50
+            #             self.enemies[i].rect.x %= self.area.width
+            #             self.enemies[i].rect.y %= self.area.height
+
+    def process_logic_enemies(self):
+        for enemy in self.enemies:
+            enemy.process_logic(self.area.objects)
+
+    def process_collision_enemies(self):
+        for enemy in self.enemies:
+            enemy.process_collision(self.area.objects + self.fires + self.bombs)
+
     def reset(self):
         self.area = Area()
         self.game_over = False
@@ -292,6 +337,11 @@ class Game:
             self.process_draw()
             self.process_logic_bombs()
             self.process_logic_fires()
+
+            # self.process_collision_enemies()
+            self.process_logic_enemies()
+            self.process_draw_enemies()
+
             if self.area.objects[self.exit_num].type == 'Exit':
                 self.area.objects[self.exit_num].process_logic()
             self.bomberman.process_logic()
