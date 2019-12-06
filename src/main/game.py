@@ -9,6 +9,7 @@ from src.bomb.fires.firehoriz import FireHorizontal
 from src.bomb.fires.firemid import FireMiddle
 from src.bomb.fires.firevert import FireVertical
 from src.bonus.bonus import BombBonus
+from src.bonus.bonus import FlamePassBonus
 from src.charachters.bomberman import Bomberman
 from src.field.area import Area
 from src.field.camera import Camera, camera_func
@@ -33,6 +34,7 @@ class Game:
         self.bomb_y_in_area = 0
         self.exit_num = None
         self.bomb_bonus_num = None
+        self.flame_pass_bonus_num = None
         self.game_over = False
         self.is_bomb = False
         self.is_pressed_up = False
@@ -118,7 +120,7 @@ class Game:
         for objects in all_objects:
             if objects.type == "Bomb" and objects.rect.colliderect(self.bomberman):
                 return
-            if objects.type == "Fire" and objects.rect.colliderect(self.bomberman):
+            if objects.type == "Fire" and objects.rect.colliderect(self.bomberman) and not self.bomberman.flame_pass:
                 self.game_over = True
                 return
             if objects.type == "Exit" and objects.rect.colliderect(self.bomberman):
@@ -128,7 +130,9 @@ class Game:
                 return
             if objects.type == "BombBonus" and objects.rect.colliderect(self.bomberman):
                 self.bomberman.max_count_bombs += 1
-            if objects.type != 'Grass' and objects.type != 'Fire' and objects.type != 'Exit' and objects.type != 'BombBonus':
+            if objects.type == "FlamePassBonus" and objects.rect.colliderect(self.bomberman):
+                self.bomberman.flame_pass = True
+            if objects.type != 'Grass' and objects.type != 'Fire' and objects.type != 'Exit' and objects.type != 'BombBonus' and objects.type != 'FlamePassBonus':
                 if objects.rect.colliderect(
                         Bomberman(self.bomberman.rect.x + self.bomberman.speed, self.bomberman.rect.y)):
                     self.bomberman.can_move_Right = False
@@ -147,16 +151,25 @@ class Game:
                         self.area.objects[i].rect.colliderect(fire):
                     self.area.objects[i] = Exit(fire.rect.x, fire.rect.y)
                     self.area.objects[i].set_open_status()
+
                 if self.area.objects[i].type == 'Brick' and (i == self.bomb_bonus_num) and \
                         self.area.objects[i].rect.colliderect(fire):
                     self.area.objects[i] = BombBonus(fire.rect.x, fire.rect.y)
                     self.area.objects[i].set_open_status()
+                if self.area.objects[i].type == 'Brick' and (i == self.flame_pass_bonus_num) and \
+                        self.area.objects[i].rect.colliderect(fire):
+                    self.area.objects[i] = FlamePassBonus(fire.rect.x, fire.rect.y)
+                    self.area.objects[i].set_open_status()
+
                 if self.area.objects[i].type == 'Brick' and self.area.objects[i].rect.colliderect(fire):
                     self.area.objects[i] = Grass(fire.rect.x, fire.rect.y)
                 if self.area.objects[i].type == 'Exit' and self.area.objects[i].status == 'Open':
                     self.game_over = True
             if self.area.objects[i].rect.colliderect(
-                        Bomberman(self.bomberman.rect.x, self.bomberman.rect.y)) and self.area.objects[i].type == 'BombBonus':
+                    Bomberman(self.bomberman.rect.x, self.bomberman.rect.y)) and (self.area.objects[
+                                                                                      i].type == 'BombBonus' or
+                                                                                  self.area.objects[
+                                                                                      i].type == 'FlamePassBonus'):
                 self.area.objects[i] = Grass(self.area.objects[i].rect.x, self.area.objects[i].rect.y)
 
     def generate_exit_num(self):
@@ -164,14 +177,24 @@ class Game:
         while self.area.objects[rnd].type != 'Brick':
             rnd = randint(34, len(self.area.objects) - 31)
         self.exit_num = rnd
-        #print(self.area.objects[rnd].rect.x, end=' ')
-        #print(self.area.objects[rnd].rect.y)
+        # print(self.area.objects[rnd].rect.x, end=' ')
+        # print(self.area.objects[rnd].rect.y)
 
     def generate_bomb_bonus_num(self):
         rnd = randint(34, len(self.area.objects) - 31)
         while self.area.objects[rnd].type != 'Brick':
             rnd = randint(34, len(self.area.objects) - 31)
         self.bomb_bonus_num = rnd
+        print('BombBonus', end=' ')
+        print(self.area.objects[rnd].rect.x, end=' ')
+        print(self.area.objects[rnd].rect.y)
+
+    def generate_flame_pass_bonus_num(self):
+        rnd = randint(34, len(self.area.objects) - 31)
+        while self.area.objects[rnd].type != 'Brick':
+            rnd = randint(34, len(self.area.objects) - 31)
+        self.flame_pass_bonus_num = rnd
+        print('FlamePassBonus', end=' ')
         print(self.area.objects[rnd].rect.x, end=' ')
         print(self.area.objects[rnd].rect.y)
 
@@ -291,6 +314,7 @@ class Game:
         self.player.time_reset()
         self.generate_exit_num()
         self.generate_bomb_bonus_num()
+        self.generate_flame_pass_bonus_num()
 
         self.is_pressed_up = False
         self.is_pressed_left = False
