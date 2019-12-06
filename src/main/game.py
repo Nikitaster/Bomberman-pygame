@@ -10,7 +10,8 @@ from src.bomb.bomb import Bomb
 from src.bomb.fires.firehoriz import FireHorizontal
 from src.bomb.fires.firemid import FireMiddle
 from src.bomb.fires.firevert import FireVertical
-from src.bonus.bonus import BonusCalled
+from src.bonus.bonuscalled import BonusCalled
+
 from src.charachters.bomberman import Bomberman
 from src.charachters.first_enemy import FirstLevelEnemy
 from src.field.area import Area
@@ -39,8 +40,7 @@ class Game:
             BombBonus=None,
             FlamePassBonus=None,
             FlamesBonus=None,
-            SpeedBonus=None
-        )
+            SpeedBonus=None)
         self.bonus_key_list = list(self.bonus_num.keys())
         self.bonus_num_list = list(self.bonus_num.values())
         self.game_over = False
@@ -58,8 +58,7 @@ class Game:
         self.player = Player_Score()
         self.sounds = dict(
             RightLeft=SoundRightLeft(),
-            UpDown=SoundUpDown()
-        )
+            UpDown=SoundUpDown())
         self.time_start = None
 
     def process_event(self):
@@ -126,21 +125,18 @@ class Game:
         self.bomberman.can_move_Up = True
         self.bomberman.can_move_Down = True
         # Collisions
-        all_objects = self.area.objects + self.bombs + self.fires + self.enemies  # Список всех объектов поля, для обработки коллизии
+        all_objects = self.area.objects + self.bombs + self.fires + self.enemies  # Список всех объектов поля, для
+        # обработки коллизии
         for objects in all_objects:
             if objects.type == "Bomb" and objects.rect.colliderect(self.bomberman):
                 return
             if (objects.type == "Fire" or objects.type == "Enemy") and objects.rect.colliderect(self.bomberman):
-                print("Game Over")
-                # реализовать анимацию смерти бомбермена
                 self.game_over = True
                 return
             if objects.type == "Exit" and objects.rect.colliderect(self.bomberman) and len(self.enemies) == 0:
-                print("YOU WON!!!")
                 self.game_over = True
                 self.player.stage += 1
                 return
-
             # результат получения бонуса
             if objects.type == "BombBonus" and objects.rect.colliderect(self.bomberman):
                 self.bomberman.max_count_bombs += 1
@@ -152,7 +148,6 @@ class Game:
                 self.bomberman.speed *= 2
                 self.bonus_num.pop('SpeedBonus')
                 print(self.bonus_num)
-
             if objects.type != 'Grass' and objects.type != 'Fire' and objects.type != 'Exit' \
                     and objects.type not in self.bonus_key_list:
                 if objects.rect.colliderect(
@@ -173,13 +168,11 @@ class Game:
                         self.area.objects[i].rect.colliderect(fire):
                     self.area.objects[i] = Exit(fire.rect.x, fire.rect.y)
                     self.area.objects[i].set_open_status()
-
                 for bonus in self.bonus_num.keys():
                     if self.area.objects[i].type == 'Brick' and i == self.bonus_num[bonus] and \
                             self.area.objects[i].rect.colliderect(fire):
                         self.area.objects[i] = BonusCalled(fire.rect.x, fire.rect.y, bonus)
                         self.area.objects[i].set_open_status()
-
                 if self.area.objects[i].type == 'Brick' and self.area.objects[i].rect.colliderect(fire):
                     self.area.objects[i] = Grass(fire.rect.x, fire.rect.y)
                 if self.area.objects[i].type == 'Exit' and self.area.objects[i].status == 'Open':
@@ -191,20 +184,15 @@ class Game:
         for enemy in range(len(self.enemies)):
             for fire in self.fires:
                 if self.enemies[enemy].rect.colliderect(fire):
-                    print("DIED")
                     self.player.score += 100
-                    # реализовать анимацию смерти врага
                     self.enemies.pop(enemy)
                     return
-
 
     def generate_exit_num(self):
         rnd = randint(34, len(self.area.objects) - 31)
         while self.area.objects[rnd].type != 'Brick':
             rnd = randint(34, len(self.area.objects) - 31)
         self.exit_num = rnd
-        # print(self.area.objects[rnd].rect.x, end=' ')
-        # print(self.area.objects[rnd].rect.y)
 
     def generate_bonus_num(self):
         counter = 0
@@ -334,22 +322,14 @@ class Game:
     def generate_enemies(self):
         for i in range(self.player.max_enemies):
             self.enemies.append(FirstLevelEnemy(randrange(50, 1400, 50), randrange(125, 625, 50)))
-
             while self.enemies[i].process_collision(self.area.objects):
                 self.enemies[i].rect.x = randrange(50, 1500, 50)
                 self.enemies[i].rect.y = randrange(125, 625, 50)
-
             while self.enemies[i].rect.x == 50 and self.enemies[i].rect.y == 125 or \
                     self.enemies[i].rect.x == 100 and self.enemies[i].rect.y == 125 or \
                     self.enemies[i].rect.x == 50 and self.enemies[i].rect.y == 175:
                 self.enemies[i].rect.x = randrange(50, 1500, 50)
                 self.enemies[i].rect.y = randrange(125, 625, 50)
-
-            #         while self.enemies[i].rect.colliderect(object):
-            #             self.enemies[i].rect.x += 50
-            #             self.enemies[i].rect.y += 50
-            #             self.enemies[i].rect.x %= self.area.width
-            #             self.enemies[i].rect.y %= self.area.height
 
     def process_logic_enemies(self):
         for enemy in self.enemies:
@@ -371,12 +351,10 @@ class Game:
         self.generate_bonus_num()
         self.enemies.clear()
         self.generate_enemies()
-
         self.is_pressed_up = False
         self.is_pressed_left = False
         self.is_pressed_down = False
         self.is_pressed_right = False
-
         self.bomberman.stop()
 
     def play_sounds(self):
@@ -414,7 +392,7 @@ class Game:
             pygame.time.wait(10)
         self.player.update()
         self.time_start = time.time()
-        while time.time() - self.time_start <3:
+        while time.time() - self.time_start < 3:
             self.bomberman.death()
             self.process_draw()
             pygame.display.flip()

@@ -19,9 +19,9 @@ class Enemy:
         self.can_move_Up = True
         self.can_move_Down = True
         self.directions = ['Up', 'Left', 'Right', 'Down']
-        self.choose_direction(self.directions)
+        self.choose_direction()
 
-    def choose_direction(self, data_can_move):
+    def choose_direction(self):
         data = []
         if self.can_move_Left:
             data.append('Left')
@@ -31,14 +31,12 @@ class Enemy:
             data.append('Up')
         if self.can_move_Down:
             data.append('Down')
-
         if len(data) == 0:
             data = ['Right', 'Left', 'Up', 'Down']
             self.can_move_Right = True
             self.can_move_Left = True
             self.can_move_Up = True
             self.can_move_Down = True
-
         self.direction = choice(data)
 
     def process_move(self):
@@ -53,12 +51,9 @@ class Enemy:
         if self.direction == 'Down':
             self.rect.move_ip(0, self.speed)
 
-    def unexpected_move(self):
-        pass
-
     def process_logic(self, objects):
         while self.process_collision(objects):
-            self.choose_direction(['Up', 'Left', 'Right', 'Down'])
+            self.choose_direction()
         self.process_move()
 
     def process_draw(self, screen, camera):
