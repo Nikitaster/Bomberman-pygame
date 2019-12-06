@@ -35,7 +35,8 @@ class Game:
         self.bonus_num = dict(
             BombBonus=None,
             FlamePassBonus=None,
-            FlamesBonus=None
+            FlamesBonus=None,
+            SpeedBonus=None
         )
         self.bonus_key_list = list(self.bonus_num.keys())
         self.bonus_num_list = list(self.bonus_num.values())
@@ -140,6 +141,10 @@ class Game:
                 self.bomberman.flame_pass = True
             if objects.type == "FlamesBonus" and objects.rect.colliderect(self.bomberman):
                 self.bomberman.long_fire += 1
+            if objects.type == "SpeedBonus" and objects.rect.colliderect(self.bomberman):
+                self.bomberman.speed *= 2
+                self.bonus_num.pop('SpeedBonus')
+                print(self.bonus_num)
 
             if objects.type != 'Grass' and objects.type != 'Fire' and objects.type != 'Exit' \
                     and objects.type not in self.bonus_key_list:
@@ -188,7 +193,7 @@ class Game:
     def generate_bonus_num(self):
         counter = 0
         for bonus in self.bonus_num.keys():
-            if randint(0, 1) == 1:
+            if randint(0, 8) == 1:
                 rnd = randint(34, len(self.area.objects) - 31)
                 while self.area.objects[rnd].type != 'Brick':
                     rnd = randint(34, len(self.area.objects) - 31)
