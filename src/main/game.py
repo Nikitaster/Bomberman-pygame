@@ -136,9 +136,6 @@ class Game:
                     self.enemies.pop(enemy)
                     return
 
-
-
-
     def process_move(self):
         self.bomberman.move()
 
@@ -248,26 +245,27 @@ class Game:
 
     def generate_enemies(self):
         for i in range(self.player.max_enemies):
-            self.enemies.append(FirstLevelEnemy(randrange(50, 1500, 50), randrange(125, 600, 50)))
+            self.enemies.append(FirstLevelEnemy(randrange(50, 1400, 50), randrange(125, 625, 50)))
 
-            for object in self.area.objects:
-                if object.type == 'Brick' or object.type == 'Block':
-                    while self.enemies[i].rect.x == 50 and self.enemies[i].rect.y == 125 or \
-                        self.enemies[i].rect.x == 100 and self.enemies[i].rect.y == 125 or \
-                        self.enemies[i].rect.x == 50 and self.enemies[i].rect.y == 175:
-                        self.enemies[i].rect.x += 50
-                        self.enemies[i].rect.y += 50
+            while self.enemies[i].process_collision(self.area.objects):
+                self.enemies[i].rect.x = randrange(50, 1500, 50)
+                self.enemies[i].rect.y = randrange(125, 625, 50)
 
-                    while self.enemies[i].rect.colliderect(object):
-                        self.enemies[i].rect.x += 50
-                        self.enemies[i].rect.y += 50
-                        self.enemies[i].rect.x %= self.area.width
-                        self.enemies[i].rect.y %= self.area.height
+            while self.enemies[i].rect.x == 50 and self.enemies[i].rect.y == 125 or \
+                    self.enemies[i].rect.x == 100 and self.enemies[i].rect.y == 125 or \
+                    self.enemies[i].rect.x == 50 and self.enemies[i].rect.y == 175:
+                self.enemies[i].rect.x += 50
+                self.enemies[i].rect.y += 50
 
+            #         while self.enemies[i].rect.colliderect(object):
+            #             self.enemies[i].rect.x += 50
+            #             self.enemies[i].rect.y += 50
+            #             self.enemies[i].rect.x %= self.area.width
+            #             self.enemies[i].rect.y %= self.area.height
 
     def process_logic_enemies(self):
         for enemy in self.enemies:
-            enemy.process_logic()
+            enemy.process_logic(self.area.objects)
 
     def process_collision_enemies(self):
         for enemy in self.enemies:
@@ -282,7 +280,7 @@ class Game:
             self.process_logic_bombs()
             self.process_logic_fires()
 
-            self.process_collision_enemies()
+            # self.process_collision_enemies()
             self.process_logic_enemies()
             self.process_draw_enemies()
 
