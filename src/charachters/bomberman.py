@@ -140,3 +140,12 @@ class Bomberman(Cell):
         if self.shift_y < 0 and self.can_move_Up:
             self.rect.move_ip(0, self.shift_y)
             self.animation_up(True)
+
+    def stop(self):
+        self.shift_x = 0
+        self.shift_y = 0
+        self.can_move_Up = False
+        self.can_move_Left = False
+        self.can_move_Right = False
+        self.can_move_Down = False
+        self.last_moving_down = True

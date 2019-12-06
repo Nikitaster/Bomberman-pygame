@@ -24,7 +24,7 @@ from src.music.sound_vertical import SoundUpDown
 
 class Game:
     def __init__(self, width=800, height=625):
-        pygame.mixer.pre_init(22000, -16, 2, 64)
+        pygame.mixer.pre_init(44100, -16, 2, 64)
         pygame.mixer.init()
         self.area = Area()
         self.bomberman = Bomberman()
@@ -149,7 +149,7 @@ class Game:
                 self.bonus_num.pop('SpeedBonus')
                 print(self.bonus_num)
             if objects.type != 'Grass' and objects.type != 'Fire' and objects.type != 'Exit' \
-                    and objects.type not in self.bonus_key_list:
+                    and objects.type not in self.bonus_key_list and objects.type != 'Enemy':
                 if objects.rect.colliderect(
                         Bomberman(self.bomberman.rect.x + self.bomberman.speed, self.bomberman.rect.y)):
                     self.bomberman.can_move_Right = False
@@ -344,6 +344,11 @@ class Game:
         self.game_over = False
         self.bomberman.rect.x = 50
         self.bomberman.rect.y = 125
+        self.is_pressed_up = False
+        self.is_pressed_left = False
+        self.is_pressed_down = False
+        self.is_pressed_right = False
+        self.bomberman.stop()
         self.fires.clear()
         self.bombs.clear()
         self.player.time_reset()
@@ -351,17 +356,11 @@ class Game:
         self.generate_bonus_num()
         self.enemies.clear()
         self.generate_enemies()
-        self.is_pressed_up = False
-        self.is_pressed_left = False
-        self.is_pressed_down = False
-        self.is_pressed_right = False
-        self.bomberman.stop()
 
     def play_sounds(self):
         if self.bomberman.shift_x > 0 and self.bomberman.can_move_Right or \
                 self.bomberman.shift_x < 0 and self.bomberman.can_move_Left:
             self.sounds['RightLeft'].play()
-
         if self.bomberman.shift_y > 0 and self.bomberman.can_move_Down or \
                 self.bomberman.shift_y < 0 and self.bomberman.can_move_Up:
             self.sounds['UpDown'].play()
@@ -391,6 +390,7 @@ class Game:
             pygame.display.flip()
             pygame.time.wait(10)
         self.player.update()
+        self.music.stop()
         self.time_start = time.time()
         while time.time() - self.time_start < 3:
             self.bomberman.death()
