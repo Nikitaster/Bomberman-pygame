@@ -1,12 +1,8 @@
 import time
-
 import pygame
 
 
-
 class Bonus:
-    # image = None  # в дочерних: image = pygame.image.load("PATH")
-
     def __init__(self, x=0, y=75, type='Bonus'):
         self.type = type  # для каждого бонуса моенять type
         self.status = 'Hidden'  # Open, Taken
@@ -33,28 +29,3 @@ class BonusCalled(Bonus):
         self.rect.x = x
         self.rect.y = y
         screen.blit(self.image, camera.apply(self))
-
-
-
-# class BombBonus(Bonus):
-#     image = pygame.image.load('././img/bonus/bonus2.png')
-#
-#     def __init__(self, x=0, y=75):
-#         super().__init__(x, y)
-#         self.type = 'BombBonus'
-#
-#
-# class FlamePassBonus(Bonus):
-#     image = pygame.image.load('././img/bonus/bonus7.png')
-#
-#     def __init__(self, x=0, y=75):
-#         super().__init__(x, y)
-#         self.type = 'FlamePassBonus'
-#
-#
-# class FlamesBonus(Bonus):
-#     image = pygame.image.load('././img/bonus/bonus1.png')
-#
-#     def __init__(self, x=0, y=75):
-#         super().__init__(x, y)
-#         self.type = 'FlamesBonus'
