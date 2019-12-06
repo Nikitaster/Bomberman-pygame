@@ -1,4 +1,6 @@
 import sys
+import time
+
 import pygame
 from random import randint
 
@@ -22,7 +24,7 @@ from random import randrange
 
 class Game:
     def __init__(self, width=800, height=625):
-        pygame.mixer.pre_init(44100, -16, 2, 64)
+        pygame.mixer.pre_init(22000, -16, 2, 64)
         pygame.mixer.init()
         self.area = Area()
         self.bomberman = Bomberman()
@@ -52,6 +54,7 @@ class Game:
             RightLeft=SoundRightLeft(),
             UpDown=SoundUpDown()
         )
+        self.time_start = None
 
     def process_event(self):
         for event in pygame.event.get():
@@ -317,10 +320,20 @@ class Game:
         self.player.time_reset()
         self.generate_exit_num()
 
+        self.is_pressed_up = False
+        self.is_pressed_left = False
+        self.is_pressed_down = False
+        self.is_pressed_right = False
+
+        self.bomberman.stop()
+
     def play_sounds(self):
-        if self.is_pressed_left or self.is_pressed_right:
+        if self.bomberman.shift_x > 0 and self.bomberman.can_move_Right or \
+                self.bomberman.shift_x < 0 and self.bomberman.can_move_Left:
             self.sounds['RightLeft'].play()
-        if self.is_pressed_up or self.is_pressed_down:
+
+        if self.bomberman.shift_y > 0 and self.bomberman.can_move_Down or \
+                self.bomberman.shift_y < 0 and self.bomberman.can_move_Up:
             self.sounds['UpDown'].play()
 
     def process_logic_sounds(self):
@@ -328,6 +341,7 @@ class Game:
             self.sounds[sound].process_logic()
 
     def main_loop(self):
+
         self.reset()
         self.music.play()
         while not self.game_over:
@@ -350,3 +364,9 @@ class Game:
             pygame.display.flip()
             pygame.time.wait(10)
         self.player.update()
+        self.time_start = time.time()
+        while time.time() - self.time_start <3:
+            self.bomberman.death()
+            self.process_draw()
+            pygame.display.flip()
+            pygame.time.wait(10)
