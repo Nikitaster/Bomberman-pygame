@@ -316,6 +316,8 @@ class Game:
         self.bombs.clear()
         self.player.time_reset()
         self.generate_exit_num()
+        self.enemies.clear()
+        self.generate_enemies()
 
     def play_sounds(self):
         if self.is_pressed_left or self.is_pressed_right:
