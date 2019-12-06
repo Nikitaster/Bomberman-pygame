@@ -314,6 +314,11 @@ class Game:
         self.game_over = False
         self.bomberman.rect.x = 50
         self.bomberman.rect.y = 125
+        self.is_pressed_up = False
+        self.is_pressed_left = False
+        self.is_pressed_down = False
+        self.is_pressed_right = False
+        self.bomberman.stop()
         self.fires.clear()
         self.bombs.clear()
         self.player.time_reset()
@@ -322,9 +327,11 @@ class Game:
         self.generate_enemies()
 
     def play_sounds(self):
-        if self.is_pressed_left or self.is_pressed_right:
+        if self.bomberman.shift_x > 0 and self.bomberman.can_move_Right or \
+                self.bomberman.shift_x < 0 and self.bomberman.can_move_Left:
             self.sounds['RightLeft'].play()
-        if self.is_pressed_up or self.is_pressed_down:
+        if self.bomberman.shift_y > 0 and self.bomberman.can_move_Down or \
+                self.bomberman.shift_y < 0 and self.bomberman.can_move_Up:
             self.sounds['UpDown'].play()
 
     def process_logic_sounds(self):
@@ -354,3 +361,4 @@ class Game:
             pygame.display.flip()
             pygame.time.wait(10)
         self.player.update()
+        self.music.stop()

@@ -41,13 +41,15 @@ class Fail:
             if event.type == pygame.KEYDOWN and self.player_score.lost:
                 '''if event.key == 13:
                 Переход к главному меню'''
-                sys.exit()
+                return True
+                # sys.exit()
 
     def fail_loop(self):
         self.text_stage = self.text_font.render('STAGE {}'.format(self.player_score.stage), 0, (255, 255, 255))
         self.start_time = time.time()
         while time.time() - self.start_time < 2 or self.player_score.lost:
-            self.process_event()
+            if self.process_event():
+                return True
             self.process_draw()
             pygame.display.flip()
             pygame.time.wait(10)
