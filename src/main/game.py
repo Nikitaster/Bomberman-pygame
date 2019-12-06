@@ -360,6 +360,8 @@ class Game:
         self.enemies.clear()
         self.generate_enemies()
         self.generate_bonus_num()
+        self.player.timeout = False
+        self.player.lost = False
 
     def play_sounds(self):
         if self.bomberman.shift_x > 0 and self.bomberman.can_move_Right or \
@@ -391,6 +393,8 @@ class Game:
             self.bomberman.process_logic()
             self.play_sounds()
             self.process_logic_sounds()
+            if self.player.timeout:
+                self.game_over = True
             pygame.display.flip()
             pygame.time.wait(10)
 
