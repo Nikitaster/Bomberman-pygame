@@ -39,6 +39,7 @@ class Bomberman(Cell):
         # for bonus:
         self.max_count_bombs = 1
         self.long_fire = 2
+        self.flame_pass = False
         # for animation
         self.start_anim_time = None
         self.num_sprite = 0

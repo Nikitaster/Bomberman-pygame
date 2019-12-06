@@ -10,6 +10,7 @@ from src.bomb.bomb import Bomb
 from src.bomb.fires.firehoriz import FireHorizontal
 from src.bomb.fires.firemid import FireMiddle
 from src.bomb.fires.firevert import FireVertical
+from src.bonus.bonus import BonusCalled
 from src.charachters.bomberman import Bomberman
 from src.charachters.first_enemy import FirstLevelEnemy
 from src.field.area import Area
@@ -34,6 +35,14 @@ class Game:
         self.bomb_x_in_area = 0
         self.bomb_y_in_area = 0
         self.exit_num = None
+        self.bonus_num = dict(
+            BombBonus=None,
+            FlamePassBonus=None,
+            FlamesBonus=None,
+            SpeedBonus=None
+        )
+        self.bonus_key_list = list(self.bonus_num.keys())
+        self.bonus_num_list = list(self.bonus_num.values())
         self.game_over = False
         self.is_bomb = False
         self.is_pressed_up = False
@@ -131,7 +140,21 @@ class Game:
                 self.game_over = True
                 self.player.stage += 1
                 return
-            if objects.type != 'Grass' and objects.type != 'Fire' and objects.type != 'Exit':
+
+            # результат получения бонуса
+            if objects.type == "BombBonus" and objects.rect.colliderect(self.bomberman):
+                self.bomberman.max_count_bombs += 1
+            if objects.type == "FlamePassBonus" and objects.rect.colliderect(self.bomberman):
+                self.bomberman.flame_pass = True
+            if objects.type == "FlamesBonus" and objects.rect.colliderect(self.bomberman):
+                self.bomberman.long_fire += 1
+            if objects.type == "SpeedBonus" and objects.rect.colliderect(self.bomberman):
+                self.bomberman.speed *= 2
+                self.bonus_num.pop('SpeedBonus')
+                print(self.bonus_num)
+
+            if objects.type != 'Grass' and objects.type != 'Fire' and objects.type != 'Exit' \
+                    and objects.type not in self.bonus_key_list:
                 if objects.rect.colliderect(
                         Bomberman(self.bomberman.rect.x + self.bomberman.speed, self.bomberman.rect.y)):
                     self.bomberman.can_move_Right = False
@@ -150,10 +173,21 @@ class Game:
                         self.area.objects[i].rect.colliderect(fire):
                     self.area.objects[i] = Exit(fire.rect.x, fire.rect.y)
                     self.area.objects[i].set_open_status()
+
+                for bonus in self.bonus_num.keys():
+                    if self.area.objects[i].type == 'Brick' and i == self.bonus_num[bonus] and \
+                            self.area.objects[i].rect.colliderect(fire):
+                        self.area.objects[i] = BonusCalled(fire.rect.x, fire.rect.y, bonus)
+                        self.area.objects[i].set_open_status()
+
                 if self.area.objects[i].type == 'Brick' and self.area.objects[i].rect.colliderect(fire):
                     self.area.objects[i] = Grass(fire.rect.x, fire.rect.y)
                 if self.area.objects[i].type == 'Exit' and self.area.objects[i].status == 'Open':
                     self.game_over = True
+            if self.area.objects[i].rect.colliderect(
+                    Bomberman(self.bomberman.rect.x, self.bomberman.rect.y)) \
+                    and (self.area.objects[i].type in self.bonus_key_list):
+                self.area.objects[i] = Grass(self.area.objects[i].rect.x, self.area.objects[i].rect.y)
         for enemy in range(len(self.enemies)):
             for fire in self.fires:
                 if self.enemies[enemy].rect.colliderect(fire):
@@ -169,8 +203,23 @@ class Game:
         while self.area.objects[rnd].type != 'Brick':
             rnd = randint(34, len(self.area.objects) - 31)
         self.exit_num = rnd
-        print(self.area.objects[rnd].rect.x, end=' ')
-        print(self.area.objects[rnd].rect.y)
+        # print(self.area.objects[rnd].rect.x, end=' ')
+        # print(self.area.objects[rnd].rect.y)
+
+    def generate_bonus_num(self):
+        counter = 0
+        for bonus in self.bonus_num.keys():
+            if randint(0, 4) == 1:
+                rnd = randint(34, len(self.area.objects) - 31)
+                while self.area.objects[rnd].type != 'Brick':
+                    rnd = randint(34, len(self.area.objects) - 31)
+                self.bonus_num[bonus] = rnd
+                self.bonus_num_list[counter] = rnd
+                counter += 1
+                print(bonus, end=' ')
+                print(self.area.objects[rnd].rect.x, end=' ')
+                print(self.area.objects[rnd].rect.y)
+                return
 
     def process_move(self):
         self.bomberman.move()
@@ -319,6 +368,7 @@ class Game:
         self.bombs.clear()
         self.player.time_reset()
         self.generate_exit_num()
+        self.generate_bonus_num()
         self.enemies.clear()
         self.generate_enemies()
 
@@ -343,7 +393,6 @@ class Game:
             self.sounds[sound].process_logic()
 
     def main_loop(self):
-
         self.reset()
         self.music.play()
         while not self.game_over:
@@ -353,11 +402,9 @@ class Game:
             self.process_draw()
             self.process_logic_bombs()
             self.process_logic_fires()
-
             # self.process_collision_enemies()
             self.process_logic_enemies()
             self.process_draw_enemies()
-
             if self.area.objects[self.exit_num].type == 'Exit':
                 self.area.objects[self.exit_num].process_logic()
             self.bomberman.process_logic()
