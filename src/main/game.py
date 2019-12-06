@@ -130,7 +130,7 @@ class Game:
                 self.game_over = True
                 self.player.stage += 1
                 return
-            if objects.type != 'Grass' and objects.type != 'Fire' and objects.type != 'Exit':
+            if objects.type != 'Grass' and objects.type != 'Fire' and objects.type != 'Exit' and objects.type != 'Enemy':
                 if objects.rect.colliderect(
                         Bomberman(self.bomberman.rect.x + self.bomberman.speed, self.bomberman.rect.y)):
                     self.bomberman.can_move_Right = False
