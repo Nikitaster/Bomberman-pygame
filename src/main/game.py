@@ -396,6 +396,7 @@ class Game:
 
         self.player.update()
         self.time_start = time.time()
+        self.bomberman.start_anim_time = None
         while time.time() - self.time_start < 3:
             self.process_event()
             self.process_logic_fires()
