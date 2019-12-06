@@ -398,7 +398,6 @@ class Game:
         self.time_start = time.time()
         while time.time() - self.time_start < 3:
             self.process_event()
-            self.process_collisions()
             self.process_logic_fires()
             self.process_logic_enemies()
             self.bomberman.death()
