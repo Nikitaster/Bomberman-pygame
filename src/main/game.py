@@ -15,7 +15,7 @@ from src.field.score import Player_Score
 from src.music.main_theme import Music
 from src.music.sound_horizontal import SoundRightLeft
 from src.music.sound_vertical import SoundUpDown
-from enemy import Enemy, FirstLevelEnemy
+from enemy import Enemy, FirstLevelEnemy, SecondLevelEnemy
 
 from random import randrange
 
@@ -151,7 +151,10 @@ class Game:
                 if self.area.objects[i].type == 'Brick' and self.area.objects[i].rect.colliderect(fire):
                     self.area.objects[i] = Grass(fire.rect.x, fire.rect.y)
                 if self.area.objects[i].type == 'Exit' and self.area.objects[i].status == 'Open':
-                    self.game_over = True
+                    self.fires.clear()
+                    for number in range(randint(5, 10)):
+                        self.enemies.append(SecondLevelEnemy(self.area.objects[i].rect.x, self.area.objects[i].rect.y))
+                    self.area.objects[i] = Grass(self.area.objects[i].rect.x, self.area.objects[i].rect.y)
         for enemy in range(len(self.enemies)):
             for fire in self.fires:
                 if self.enemies[enemy].rect.colliderect(fire):
