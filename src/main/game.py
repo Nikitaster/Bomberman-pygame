@@ -254,8 +254,8 @@ class Game:
             while self.enemies[i].rect.x == 50 and self.enemies[i].rect.y == 125 or \
                     self.enemies[i].rect.x == 100 and self.enemies[i].rect.y == 125 or \
                     self.enemies[i].rect.x == 50 and self.enemies[i].rect.y == 175:
-                self.enemies[i].rect.x += 50
-                self.enemies[i].rect.y += 50
+                self.enemies[i].rect.x = randrange(50, 1500, 50)
+                self.enemies[i].rect.y = randrange(125, 625, 50)
 
             #         while self.enemies[i].rect.colliderect(object):
             #             self.enemies[i].rect.x += 50
@@ -265,7 +265,7 @@ class Game:
 
     def process_logic_enemies(self):
         for enemy in self.enemies:
-            enemy.process_logic(self.area.objects)
+            enemy.process_logic(self.area.objects + self.bombs)
 
     def process_collision_enemies(self):
         for enemy in self.enemies:
