@@ -188,15 +188,17 @@ class Game:
     def generate_bonus_num(self):
         counter = 0
         for bonus in self.bonus_num.keys():
-            rnd = randint(34, len(self.area.objects) - 31)
-            while self.area.objects[rnd].type != 'Brick':
+            if randint(0, 1) == 1:
                 rnd = randint(34, len(self.area.objects) - 31)
-            self.bonus_num[bonus] = rnd
-            self.bonus_num_list[counter] = rnd
-            counter += 1
-            print(bonus, end=' ')
-            print(self.area.objects[rnd].rect.x, end=' ')
-            print(self.area.objects[rnd].rect.y)
+                while self.area.objects[rnd].type != 'Brick':
+                    rnd = randint(34, len(self.area.objects) - 31)
+                self.bonus_num[bonus] = rnd
+                self.bonus_num_list[counter] = rnd
+                counter += 1
+                print(bonus, end=' ')
+                print(self.area.objects[rnd].rect.x, end=' ')
+                print(self.area.objects[rnd].rect.y)
+                return
 
     def process_move(self):
         self.bomberman.move()
