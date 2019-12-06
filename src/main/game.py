@@ -10,6 +10,7 @@ from src.bomb.fires.firemid import FireMiddle
 from src.bomb.fires.firevert import FireVertical
 from src.bonus.bonus import BombBonus
 from src.bonus.bonus import FlamePassBonus
+from src.bonus.bonus import FlamesBonus
 from src.charachters.bomberman import Bomberman
 from src.field.area import Area
 from src.field.camera import Camera, camera_func
@@ -35,6 +36,7 @@ class Game:
         self.exit_num = None
         self.bomb_bonus_num = None
         self.flame_pass_bonus_num = None
+        self.flames_bonus_num = None
         self.game_over = False
         self.is_bomb = False
         self.is_pressed_up = False
@@ -132,7 +134,11 @@ class Game:
                 self.bomberman.max_count_bombs += 1
             if objects.type == "FlamePassBonus" and objects.rect.colliderect(self.bomberman):
                 self.bomberman.flame_pass = True
-            if objects.type != 'Grass' and objects.type != 'Fire' and objects.type != 'Exit' and objects.type != 'BombBonus' and objects.type != 'FlamePassBonus':
+            if objects.type == "FlamesBonus" and objects.rect.colliderect(self.bomberman):
+                self.bomberman.long_fire += 1
+            if objects.type != 'Grass' and objects.type != 'Fire' and objects.type != 'Exit' \
+                    and objects.type != 'BombBonus' and objects.type != 'FlamePassBonus' \
+                    and objects.type != 'FlamesBonus':
                 if objects.rect.colliderect(
                         Bomberman(self.bomberman.rect.x + self.bomberman.speed, self.bomberman.rect.y)):
                     self.bomberman.can_move_Right = False
@@ -160,6 +166,10 @@ class Game:
                         self.area.objects[i].rect.colliderect(fire):
                     self.area.objects[i] = FlamePassBonus(fire.rect.x, fire.rect.y)
                     self.area.objects[i].set_open_status()
+                if self.area.objects[i].type == 'Brick' and (i == self.flames_bonus_num) and \
+                        self.area.objects[i].rect.colliderect(fire):
+                    self.area.objects[i] = FlamesBonus(fire.rect.x, fire.rect.y)
+                    self.area.objects[i].set_open_status()
 
                 if self.area.objects[i].type == 'Brick' and self.area.objects[i].rect.colliderect(fire):
                     self.area.objects[i] = Grass(fire.rect.x, fire.rect.y)
@@ -169,7 +179,9 @@ class Game:
                     Bomberman(self.bomberman.rect.x, self.bomberman.rect.y)) and (self.area.objects[
                                                                                       i].type == 'BombBonus' or
                                                                                   self.area.objects[
-                                                                                      i].type == 'FlamePassBonus'):
+                                                                                      i].type == 'FlamePassBonus' or
+                                                                                  self.area.objects[
+                                                                                      i].type == 'FlamesBonus'):
                 self.area.objects[i] = Grass(self.area.objects[i].rect.x, self.area.objects[i].rect.y)
 
     def generate_exit_num(self):
@@ -195,6 +207,15 @@ class Game:
             rnd = randint(34, len(self.area.objects) - 31)
         self.flame_pass_bonus_num = rnd
         print('FlamePassBonus', end=' ')
+        print(self.area.objects[rnd].rect.x, end=' ')
+        print(self.area.objects[rnd].rect.y)
+
+    def generate_flames_bonus_num(self):
+        rnd = randint(34, len(self.area.objects) - 31)
+        while self.area.objects[rnd].type != 'Brick':
+            rnd = randint(34, len(self.area.objects) - 31)
+        self.flames_bonus_num = rnd
+        print('FlamesBonus', end=' ')
         print(self.area.objects[rnd].rect.x, end=' ')
         print(self.area.objects[rnd].rect.y)
 
@@ -315,6 +336,7 @@ class Game:
         self.generate_exit_num()
         self.generate_bomb_bonus_num()
         self.generate_flame_pass_bonus_num()
+        self.generate_flames_bonus_num()
 
         self.is_pressed_up = False
         self.is_pressed_left = False
