@@ -193,7 +193,7 @@ class Game:
     def generate_bonus_num(self):
         counter = 0
         for bonus in self.bonus_num.keys():
-            if randint(0, 8) == 1:
+            if randint(0, 4) == 1:
                 rnd = randint(34, len(self.area.objects) - 31)
                 while self.area.objects[rnd].type != 'Brick':
                     rnd = randint(34, len(self.area.objects) - 31)
