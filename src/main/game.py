@@ -1,8 +1,8 @@
 import sys
-import time
-from random import randrange
-import pygame
 from random import randint
+from random import randrange
+
+import pygame
 
 from src.blocks.exit import Exit
 from src.blocks.grass import Grass
@@ -11,18 +11,15 @@ from src.bomb.fires.firehoriz import FireHorizontal
 from src.bomb.fires.firemid import FireMiddle
 from src.bomb.fires.firevert import FireVertical
 from src.bonus.bonuscalled import BonusCalled
-
 from src.charachters.bomberman import Bomberman
 from src.charachters.first_enemy import FirstLevelEnemy
+from src.charachters.second_enemy import SecondLevelEnemy
 from src.field.area import Area
 from src.field.camera import Camera, camera_func
 from src.field.score import Player_Score
 from src.music.main_theme import Music
 from src.music.sound_horizontal import SoundRightLeft
 from src.music.sound_vertical import SoundUpDown
-from enemy import Enemy, FirstLevelEnemy, SecondLevelEnemy
-
-from random import randrange
 
 
 class Game:
