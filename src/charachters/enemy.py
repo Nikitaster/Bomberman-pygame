@@ -5,7 +5,7 @@ import pygame
 
 
 class Enemy:
-    image = pygame.image.load("img/enemy/first_enemy/enemy_move.png")
+    image = pygame.image.load("./img/enemy/first_enemy/enemy_move.png")
     type = 'Enemy'
 
     def __init__(self, x=100, y=125):
@@ -103,19 +103,3 @@ class Enemy:
                 self.can_move_Left = False
                 return True
         return False
-
-
-class FirstLevelEnemy(Enemy):
-    image = pygame.image.load("img/enemy/first_enemy/enemy_move.png")
-
-    def __init__(self, x=100, y=125):
-        super().__init__(x, y)
-        self.speed = 4
-
-
-class SecondLevelEnemy(Enemy):
-    image = pygame.image.load("img/enemy/second_enemy/enemy_move.png")
-
-    def __init__(self, x=100, y=125):
-        super().__init__(x, y)
-        self.speed = 6
