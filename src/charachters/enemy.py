@@ -1,11 +1,15 @@
-from random import randint, randrange, choice
+import time
+from random import choice
 
-import sys
 import pygame
 
 
 class Enemy:
-    image = pygame.image.load("./img/enemy/first_enemy/enemy_move.png")
+    animation_enemy = ['./img/enemy/first_enemy/enemy_start.png',
+                       './img/enemy/first_enemy/enemy_stand.png',
+                       './img/enemy/first_enemy/enemy_move.png']
+
+    image = pygame.image.load(animation_enemy[0])
     type = 'Enemy'
 
     def __init__(self, x=100, y=125):
@@ -20,6 +24,9 @@ class Enemy:
         self.can_move_Down = True
         self.directions = ['Up', 'Left', 'Right', 'Down']
         self.choose_direction()
+        # for animation
+        self.start_anim_time = None
+        self.num_sprite = 0
 
     def choose_direction(self):
         data = []
@@ -39,6 +46,19 @@ class Enemy:
             self.can_move_Down = True
         self.direction = choice(data)
 
+    def prepare_for_anim(self):
+        if self.start_anim_time is None:
+            self.start_anim_time = time.time()
+            self.num_sprite = 0
+        elif self.start_anim_time is not None:
+            if time.time() - self.start_anim_time > 0.3:
+                self.start_anim_time = time.time()
+                self.num_sprite = (self.num_sprite + 1) % 2
+
+    def dancing(self):
+        self.prepare_for_anim()
+        self.image = pygame.image.load(self.animation_enemy[self.num_sprite])
+
     def process_move(self):
         if not self.can_move_Up and not self.can_move_Right and not self.can_move_Left and not self.can_move_Down:
             return
@@ -55,6 +75,7 @@ class Enemy:
         while self.process_collision(objects):
             self.choose_direction()
         self.process_move()
+        self.dancing()
 
     def process_draw(self, screen, camera):
         screen.blit(self.image, camera.apply(self))
@@ -98,3 +119,24 @@ class Enemy:
                 self.can_move_Left = False
                 return True
         return False
+
+
+class FirstLevelEnemy(Enemy):
+    image = pygame.image.load("img/enemy/first_enemy/enemy_move.png")
+    animation_enemy = ['./img/enemy/first_enemy/enemy_start.png',
+                       './img/enemy/first_enemy/enemy_stand.png',
+                       './img/enemy/first_enemy/enemy_move.png']
+
+    def __init__(self, x=100, y=125):
+        super().__init__(x, y)
+        self.speed = 4
+
+
+class SecondLevelEnemy(Enemy):
+    image = pygame.image.load("img/enemy/second_enemy/enemy_move.png")
+    animation_enemy = ['./img/enemy/second_enemy/enemy_stand.png',
+                       './img/enemy/second_enemy/enemy_move.png']
+
+    def __init__(self, x=100, y=125):
+        super().__init__(x, y)
+        self.speed = 6

@@ -20,6 +20,9 @@ from src.field.score import Player_Score
 from src.music.main_theme import Music
 from src.music.sound_horizontal import SoundRightLeft
 from src.music.sound_vertical import SoundUpDown
+from enemy import Enemy, FirstLevelEnemy, SecondLevelEnemy
+
+from random import randrange
 
 
 class Game:
@@ -176,7 +179,10 @@ class Game:
                 if self.area.objects[i].type == 'Brick' and self.area.objects[i].rect.colliderect(fire):
                     self.area.objects[i] = Grass(fire.rect.x, fire.rect.y)
                 if self.area.objects[i].type == 'Exit' and self.area.objects[i].status == 'Open':
-                    self.game_over = True
+                    self.fires.clear()
+                    for number in range(randint(5, 10)):
+                        self.enemies.append(SecondLevelEnemy(self.area.objects[i].rect.x, self.area.objects[i].rect.y))
+                    self.area.objects[i] = Grass(self.area.objects[i].rect.x, self.area.objects[i].rect.y)
             if self.area.objects[i].rect.colliderect(
                     Bomberman(self.bomberman.rect.x, self.bomberman.rect.y)) \
                     and (self.area.objects[i].type in self.bonus_key_list):
@@ -353,9 +359,9 @@ class Game:
         self.bombs.clear()
         self.player.time_reset()
         self.generate_exit_num()
-        self.generate_bonus_num()
         self.enemies.clear()
         self.generate_enemies()
+        self.generate_bonus_num()
 
     def play_sounds(self):
         if self.is_pressed_left or self.is_pressed_right:

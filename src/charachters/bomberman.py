@@ -5,7 +5,6 @@ from src.blocks.cell import Cell
 
 
 class Bomberman(Cell):
-    animation_gap = 2
     animation_bomberman_down_s = ['././img/bomberman/stand/Front.png',
                                   '././img/bomberman/stand/Front1.png']
     animation_bomberman_down_a = ['././img/bomberman/run/Runs_down.png',
