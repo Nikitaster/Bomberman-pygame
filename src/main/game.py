@@ -47,7 +47,6 @@ class Game:
         self.fires = []
         self.enemies = []
         self.player = Player_Score()
-        self.generate_enemies()
         self.sounds = dict(
             RightLeft=SoundRightLeft(),
             UpDown=SoundUpDown()
@@ -121,10 +120,12 @@ class Game:
         for objects in all_objects:
             if objects.type == "Bomb" and objects.rect.colliderect(self.bomberman):
                 return
-            if objects.type == "Fire" and objects.rect.colliderect(self.bomberman):
+            if (objects.type == "Fire" or objects.type == "Enemy") and objects.rect.colliderect(self.bomberman):
+                print("Game Over")
+                # реализовать анимацию смерти бомбермена
                 self.game_over = True
                 return
-            if objects.type == "Exit" and objects.rect.colliderect(self.bomberman):
+            if objects.type == "Exit" and objects.rect.colliderect(self.bomberman) and len(self.enemies) == 0:
                 print("YOU WON!!!")
                 self.game_over = True
                 self.player.stage += 1
@@ -156,6 +157,7 @@ class Game:
             for fire in self.fires:
                 if self.enemies[enemy].rect.colliderect(fire):
                     print("DIED")
+                    self.player.score += 100
                     # реализовать анимацию смерти врага
                     self.enemies.pop(enemy)
                     return

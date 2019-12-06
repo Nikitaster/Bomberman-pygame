@@ -16,7 +16,7 @@ class Music:
     def __init__(self):
         index = randint(0, len(self.themes) - 1)
         pygame.mixer.music.load(self.themes[index])
-        pygame.mixer.music.set_volume(0.18)
+        pygame.mixer.music.set_volume(0.1)
 
     @staticmethod
     def play():
