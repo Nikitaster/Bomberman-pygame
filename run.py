@@ -1,6 +1,5 @@
 import sys
 
-
 from src.main.loop import loop
 from src.screens.fail import Fail
 from src.main.game import Game

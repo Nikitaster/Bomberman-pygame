@@ -1,0 +1,5 @@
+Special libraries:
+    pygame (ver 1.9.6)
+    pyganim (ver 0.9.2)
+    pip (ver 19.0.3)
+    setuptools (ver 40.8.0)
