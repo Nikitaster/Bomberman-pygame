@@ -311,12 +311,24 @@ class Game:
             self.bomberman.process_logic()
             self.play_sounds()
             self.process_logic_sounds()
+
             pygame.display.flip()
             pygame.time.wait(10)
+
         self.player.update()
         self.time_start = time.time()
+
         while time.time() - self.time_start <3:
+            self.process_event()
+            self.process_collisions()
+            self.process_logic_bombs()
+            self.process_logic_fires()
+            if self.area.objects[self.exit_num].type == 'Exit':
+                self.area.objects[self.exit_num].process_logic()
+            self.play_sounds()
+            self.process_logic_sounds()
             self.bomberman.death()
             self.process_draw()
+
             pygame.display.flip()
             pygame.time.wait(10)
