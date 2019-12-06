@@ -2,6 +2,8 @@ import os
 import pygame
 from pygame.locals import *
 from src.main.game import Game
+from src.screens.fail import Fail
+from src.main.loop import loop
 
 pygame.init()
 
@@ -31,7 +33,7 @@ blue = (0, 0, 255)
 yellow = (255, 255, 0)
 
 # Game Fonts
-font = "./fonts/pixels.ttf"
+font = "../fonts/pixel.ttf"
 
 # Game Framerate
 clock = pygame.time.Clock()
@@ -54,7 +56,7 @@ def main_menu():
                     selected = "quit"
                 if event.key == pygame.K_RETURN:
                     if selected == "start":
-                        exec(open('./run.py').read())
+                        exec(open('.././run.py').read())
                     if selected == "quit":
                         pygame.quit()
                         quit()
