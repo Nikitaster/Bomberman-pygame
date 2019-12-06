@@ -361,9 +361,12 @@ class Game:
         self.generate_bonus_num()
 
     def play_sounds(self):
-        if self.is_pressed_left or self.is_pressed_right:
+        if self.bomberman.shift_x > 0 and self.bomberman.can_move_Right or \
+                self.bomberman.shift_x < 0 and self.bomberman.can_move_Left:
             self.sounds['RightLeft'].play()
-        if self.is_pressed_up or self.is_pressed_down:
+
+        if self.bomberman.shift_y > 0 and self.bomberman.can_move_Down or \
+                self.bomberman.shift_y < 0 and self.bomberman.can_move_Up:
             self.sounds['UpDown'].play()
 
     def process_logic_sounds(self):
@@ -380,11 +383,9 @@ class Game:
             self.process_draw()
             self.process_logic_bombs()
             self.process_logic_fires()
-
             # self.process_collision_enemies()
             self.process_logic_enemies()
             self.process_draw_enemies()
-
             if self.area.objects[self.exit_num].type == 'Exit':
                 self.area.objects[self.exit_num].process_logic()
             self.bomberman.process_logic()
@@ -393,3 +394,17 @@ class Game:
             pygame.display.flip()
             pygame.time.wait(10)
         self.player.update()
+        self.time_start = time.time()
+        while time.time() - self.time_start <3:
+            self.process_event()
+            self.process_collisions()
+            self.process_logic_bombs()
+            self.process_logic_fires()
+            if self.area.objects[self.exit_num].type == 'Exit':
+                self.area.objects[self.exit_num].process_logic()
+            self.play_sounds()
+            self.process_logic_sounds()
+            self.bomberman.death()
+            self.process_draw()
+            pygame.display.flip()
+            pygame.time.wait(10)
