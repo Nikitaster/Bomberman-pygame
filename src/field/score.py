@@ -12,6 +12,7 @@ class Player_Score:
         self.end_time = self.start_time + self.time_left
         self.lifes = lifes  # How much life left
         self.lost = False  # Have you lost?
+        self.timeout = False
         self.stage = stage
         self.max_enemies = self.stage + randrange(3, 5)
         pygame.font.init()  # Start fonts
@@ -48,7 +49,7 @@ class Player_Score:
     def get_time_left(self):
         now_time = self.time_left - (time.time() - self.start_time)
         if now_time <= 0:
-            self.lost = True
+            self.timeout = True
             print("GameOver")
             return "{0:.0f}".format(0)
         return "{0:.0f}".format(now_time)
