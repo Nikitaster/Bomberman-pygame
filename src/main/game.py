@@ -353,6 +353,7 @@ class Game:
         self.is_pressed_down = False
         self.is_pressed_right = False
         self.bomberman.stop()
+        self.bomb.is_bomb = False
         self.fires.clear()
         self.bombs.clear()
         self.player.time_reset()
