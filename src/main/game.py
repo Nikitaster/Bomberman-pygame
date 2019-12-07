@@ -79,7 +79,6 @@ class Game:
                 elif event.key == 119 or event.key == 273 or event.key == 172:
                     self.is_pressed_up = True
                     self.bomberman.shift_y_up = -self.bomberman.speed
-                # Обработка нажатия клавиши E (для взрыва)
                 elif (event.key == 101 or event.key == 173) and not self.bomb.is_bomb:
                     self.bomb.bomb_larger_middle_x = self.bomb_place_x()
                     self.bomb.bomb_larger_middle_y = self.bomb_place_y()
@@ -127,7 +126,6 @@ class Game:
         self.bomberman.can_move_Down = True
         # Collisions
         all_objects = self.area.objects + self.bombs + self.fires + self.enemies  # Список всех объектов поля, для
-        # обработки коллизии
         for objects in all_objects:
             if objects.type == "Bomb" and objects.rect.colliderect(self.bomberman):
                 return
@@ -138,7 +136,6 @@ class Game:
                 self.game_over = True
                 self.player.stage += 1
                 return
-            # результат получения бонуса
             if objects.type == "BombBonus" and objects.rect.colliderect(self.bomberman):
                 self.bomberman.max_count_bombs += 1
             if objects.type == "FlamePassBonus" and objects.rect.colliderect(self.bomberman):
