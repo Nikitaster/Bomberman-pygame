@@ -148,7 +148,6 @@ class Game:
             if objects.type == "SpeedBonus" and objects.rect.colliderect(self.bomberman):
                 self.bomberman.speed *= 2
                 self.bonus_num.pop('SpeedBonus')
-                print(self.bonus_num)
             if objects.type != 'Grass' and objects.type != 'Fire' and objects.type != 'Exit' \
                     and objects.type not in self.bonus_key_list and objects.type != 'Enemy':
                 if objects.rect.colliderect(
@@ -208,9 +207,6 @@ class Game:
                 self.bonus_num[bonus] = rnd
                 self.bonus_num_list[counter] = rnd
                 counter += 1
-                print(bonus, end=' ')
-                print(self.area.objects[rnd].rect.x, end=' ')
-                print(self.area.objects[rnd].rect.y)
                 return
 
     def process_move(self):
