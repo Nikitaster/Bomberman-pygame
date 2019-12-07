@@ -363,6 +363,7 @@ class Game:
         self.generate_bonus_num()
         self.player.timeout = False
         self.player.lost = False
+        self.music = Music()
 
     def play_sounds(self):
         if self.bomberman.shift_x > 0 and self.bomberman.can_move_Right or \
