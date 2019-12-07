@@ -10,4 +10,4 @@ class SecondLevelEnemy(Enemy):
 
     def __init__(self, x=100, y=125):
         super().__init__(x, y)
-        self.speed = 6
+        self.speed = 5
