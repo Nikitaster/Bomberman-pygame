@@ -3,6 +3,13 @@
 ## Preview
 <img src="./preview.gif" width="50%" />
 
+## Start
+```bash
+  pip install --upgrade pip
+  pip install -r main_information/requirements.txt 
+  python run.py
+```
+
 ## Main concepts
 
 Numbers -> Blocks:
