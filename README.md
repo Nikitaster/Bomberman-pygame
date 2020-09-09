@@ -5,6 +5,8 @@
 
 ## Start
 ```bash
+  python -m venv venv
+  source venv/bin/activate
   pip install --upgrade pip
   pip install -r main_information/requirements.txt 
   python run.py
